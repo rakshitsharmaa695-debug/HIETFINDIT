@@ -21,7 +21,7 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-// Initialize Database Tables
+// Initialize Database Tables & Auto-Fix missing columns
 const initDB = async () => {
   try {
     await pool.query(`
@@ -32,6 +32,12 @@ const initDB = async () => {
         password VARCHAR(255),
         role VARCHAR(50)
       );
+
+      -- Ensure columns exist if table was already created previously
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS name VARCHAR(100);
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS email VARCHAR(100);
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS password VARCHAR(255);
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS role VARCHAR(50);
       
       CREATE TABLE IF NOT EXISTS faculty (
         id SERIAL PRIMARY KEY,
@@ -42,7 +48,7 @@ const initDB = async () => {
         photo TEXT
       );
     `);
-    console.log('Connected to Cloud PostgreSQL Database');
+    console.log('Connected to Cloud PostgreSQL Database & Tables Verified');
   } catch (err) {
     console.error('DB Init Error:', err);
   }
