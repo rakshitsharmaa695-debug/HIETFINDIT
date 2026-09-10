@@ -7,7 +7,6 @@ require('dotenv').config();
 
 const app = express();
 
-// CORS configuration for firebase, Netlify, and Local testing
 app.use(cors({
   origin: [
     'https://hietfindit.web.app', 
