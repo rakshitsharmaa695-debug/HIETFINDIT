@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin Dashboard - HIETFINDIT</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-100 text-slate-800 font-sans min-h-screen">
+
+  <nav class="bg-slate-900 text-white p-4 flex justify-between items-center shadow-lg">
+    <h1 class="text-xl font-bold flex items-center gap-2"><i data-lucide="shield-check"></i> Admin Dashboard</h1>
+    <a href="index.html" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg text-sm font-bold transition">Logout Admin</a>
+  </nav>
+
+  <div class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 lg:col-span-1">
+      <h2 class="text-lg font-bold mb-4 border-b pb-2">Add New Faculty</h2>
+      <form id="facultyForm" class="space-y-3">
+        <input type="text" id="fName" placeholder="Full Name" required class="w-full border rounded-lg p-2 text-sm">
+        <input type="text" id="fDept" placeholder="Department (e.g. CSE)" required class="w-full border rounded-lg p-2 text-sm">
+        <input type="text" id="fDesig" placeholder="Designation (e.g. HOD)" required class="w-full border rounded-lg p-2 text-sm">
+        <input type="text" id="fCabin" placeholder="Cabin / Room No." class="w-full border rounded-lg p-2 text-sm">
+        <label class="block text-xs font-semibold text-slate-500 mt-2">Upload Photo</label>
+        <input type="file" id="fPhoto" accept="image/*" class="w-full border rounded-lg p-1 text-sm bg-slate-50">
+        <button id="submitBtn" type="submit" class="w-full bg-emerald-600 text-white font-bold p-2 rounded-lg hover:bg-emerald-700 mt-2">Add to Directory</button>
+      </form>
+    </div>
+
+    <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 lg:col-span-2 overflow-x-auto">
+      <h2 class="text-lg font-bold mb-4 border-b pb-2">Manage Faculty Directory</h2>
+      <table class="w-full text-left text-sm">
+        <thead class="bg-slate-50 text-slate-500">
+          <tr>
+            <th class="p-3 rounded-tl-lg">Photo</th>
+            <th class="p-3">Details</th>
+            <th class="p-3">Department</th>
+            <th class="p-3 rounded-tr-lg">Action</th>
+          </tr>
+        </thead>
+        <tbody id="facultyTableBody">
+          <tr><td colspan="4" class="p-4 text-center text-slate-500">Loading data...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    lucide.createIcons();
+    const API_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://hietfindit-lqzt.onrender.com/api';
+    const form = document.getElementById('facultyForm');
+    const tableBody = document.getElementById('facultyTableBody');
+    const submitBtn = document.getElementById('submitBtn');
+
+    async function loadFaculty() {
+      try {
+        const res = await fetch(`${API_URL}/faculty`);
+        const data = await res.json();
+        tableBody.innerHTML = '';
+        if(data.length === 0) return tableBody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-500">No faculty added yet.</td></tr>';
+        
+        data.forEach(faculty => {
+          const photoUrl = faculty.photo || 'https://via.placeholder.com/50';
+          const tr = document.createElement('tr');
+          tr.className = 'border-b hover:bg-slate-50';
+          tr.innerHTML = `
+            <td class="p-3"><img src="${photoUrl}" class="w-12 h-12 rounded-full object-cover border"></td>
+            <td class="p-3"><p class="font-bold text-slate-800">${faculty.name}</p><p class="text-xs text-slate-500">${faculty.designation} | ${faculty.cabin || 'N/A'}</p></td>
+            <td class="p-3 font-semibold text-indigo-600">${faculty.department}</td>
+            <td class="p-3"><button onclick="deleteFaculty(${faculty.id})" class="text-red-500 hover:bg-red-50 p-2 rounded"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
+          `;
+          tableBody.appendChild(tr);
+        });
+        lucide.createIcons();
+      } catch (err) { console.error(err); }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      submitBtn.textContent = 'Uploading...'; submitBtn.disabled = true;
+      const file = document.getElementById('fPhoto').files[0];
+      
+      const toBase64 = f => new Promise((res, rej) => { const r = new FileReader(); r.readAsDataURL(f); r.onload = () => res(r.result); r.onerror = e => rej(e); });
+      const photoBase64 = file ? await toBase64(file) : '';
+
+      const bodyData = { 
+        name: document.getElementById('fName').value, department: document.getElementById('fDept').value, 
+        designation: document.getElementById('fDesig').value, cabin: document.getElementById('fCabin').value, photo: photoBase64 
+      };
+
+      try {
+        await fetch(`${API_URL}/faculty`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(bodyData) });
+        form.reset(); loadFaculty();
+      } catch (err) { alert('Error adding faculty'); } finally { submitBtn.textContent = 'Add to Directory'; submitBtn.disabled = false; }
+    });
+
+    async function deleteFaculty(id) {
+      if(confirm('Delete this faculty member?')) {
+        await fetch(`${API_URL}/faculty/${id}`, { method: 'DELETE' });
+        loadFaculty();
+      }
+    }
+    loadFaculty();
+  </script>
+</body>
+</html>
