@@ -7,136 +7,59 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    /* Clean Minimal Background */
-    body {
-      background-color: #fafcff;
-      background-image: radial-gradient(#e2e8f0 1px, transparent 1px);
-      background-size: 40px 40px;
-    }
-
-    /* Premium Dynamic Floating Effect */
-    @keyframes float-pro {
-      0% { transform: translateY(0px); box-shadow: 0 20px 40px -10px rgba(91, 91, 254, 0.15); }
-      50% { transform: translateY(-15px); box-shadow: 0 30px 50px -15px rgba(91, 91, 254, 0.25); }
-      100% { transform: translateY(0px); box-shadow: 0 20px 40px -10px rgba(91, 91, 254, 0.15); }
-    }
-    .image-float-pro {
-      animation: float-pro 6s ease-in-out infinite;
-    }
-
-    /* Custom Brand Color from your screenshot */
-    .text-brand { color: #5b5bfe; }
-    .bg-brand { background-color: #5b5bfe; }
-    .hover-bg-brand:hover { background-color: #4a4af0; }
+    body { background-color: #fafcff; background-image: radial-gradient(#e2e8f0 1px, transparent 1px); background-size: 40px 40px; }
+    @keyframes float-pro { 0% { transform: translateY(0px); box-shadow: 0 20px 40px -10px rgba(91, 91, 254, 0.15); } 50% { transform: translateY(-15px); box-shadow: 0 30px 50px -15px rgba(91, 91, 254, 0.25); } 100% { transform: translateY(0px); box-shadow: 0 20px 40px -10px rgba(91, 91, 254, 0.15); } }
+    .image-float-pro { animation: float-pro 6s ease-in-out infinite; }
+    .text-brand { color: #5b5bfe; } .bg-brand { background-color: #5b5bfe; } .hover-bg-brand:hover { background-color: #4a4af0; }
   </style>
 </head>
 <body class="text-slate-900 font-sans min-h-screen flex flex-col overflow-x-hidden">
-
-  <!-- Custom Navbar exactly like your screenshot -->
   <nav class="bg-white/95 backdrop-blur-md sticky top-0 z-50 border-b border-slate-100 shadow-sm">
     <div class="max-w-[90rem] mx-auto px-6 py-4 flex items-center justify-between">
-      
-      <!-- Brand Logo -->
       <div class="flex items-center space-x-3 cursor-pointer">
         <div class="bg-brand p-2 rounded-lg text-white font-black text-lg leading-none shadow-md">HF</div>
         <span class="text-2xl font-black tracking-tight text-slate-900">HIET<span class="text-brand">FINDIT</span></span>
       </div>
-
-      <!-- The Pill Menu (From your screenshot) -->
       <div class="hidden lg:flex items-center space-x-8 bg-slate-50 border border-slate-200 rounded-full px-8 py-2.5 shadow-sm">
-         <a href="faculty-directory.html" class="flex items-center gap-2 text-slate-600 hover:text-brand font-bold text-sm transition-colors">
-           <i data-lucide="users" class="w-4 h-4"></i> Faculty Directory
-         </a>
-         <a href="#" class="flex items-center gap-2 text-slate-600 hover:text-brand font-bold text-sm transition-colors">
-           <i data-lucide="message-square-warning" class="w-4 h-4"></i> Complaints
-         </a>
-         <a href="#" class="flex items-center gap-2 text-slate-600 hover:text-brand font-bold text-sm transition-colors">
-           <i data-lucide="bus" class="w-4 h-4"></i> Transport Info
-         </a>
-         <a href="#" class="flex items-center gap-2 text-slate-600 hover:text-brand font-bold text-sm transition-colors">
-           <i data-lucide="search" class="w-4 h-4"></i> Lost & Found
-         </a>
+         <a href="dashboard.html#faculty" class="flex items-center gap-2 text-slate-600 hover:text-brand font-bold text-sm transition-colors"><i data-lucide="users" class="w-4 h-4"></i> Faculty Directory</a>
+         <a href="dashboard.html#complaints" class="flex items-center gap-2 text-slate-600 hover:text-brand font-bold text-sm transition-colors"><i data-lucide="message-square-warning" class="w-4 h-4"></i> Complaints</a>
+         <a href="dashboard.html#transport" class="flex items-center gap-2 text-slate-600 hover:text-brand font-bold text-sm transition-colors"><i data-lucide="bus" class="w-4 h-4"></i> Transport Info</a>
+         <a href="dashboard.html#lostfound" class="flex items-center gap-2 text-slate-600 hover:text-brand font-bold text-sm transition-colors"><i data-lucide="search" class="w-4 h-4"></i> Lost & Found</a>
       </div>
-
-      <!-- Login & Dashboard Actions -->
       <div class="flex items-center gap-4">
-        <!-- Default Login Button -->
-        <a href="login.html" id="navLoginBtn" class="text-slate-600 hover:text-brand font-bold text-sm px-2 transition-colors">
-          Login
-        </a>
-        <!-- Student Dashboard Button -->
-        <a href="dashboard.html" id="navDashboardBtn" class="bg-brand hover-bg-brand text-white px-5 py-2.5 rounded-full text-sm font-bold transition-all shadow-md flex items-center gap-2">
-          Dashboard <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
-        </a>
+        <a href="login.html" id="navLoginBtn" class="text-slate-600 hover:text-brand font-bold text-sm px-2 transition-colors">Login</a>
+        <a href="dashboard.html" id="navDashboardBtn" class="bg-brand hover-bg-brand text-white px-5 py-2.5 rounded-full text-sm font-bold transition-all shadow-md flex items-center gap-2">Dashboard <i data-lucide="layout-dashboard" class="w-4 h-4"></i></a>
       </div>
     </div>
   </nav>
 
-  <!-- Main Hero Content -->
   <main class="flex-grow flex items-center py-12 lg:py-20 relative">
     <div class="max-w-[85rem] mx-auto px-6 lg:px-12 w-full grid lg:grid-cols-2 gap-16 items-center">
-      
-      <!-- Left Column: Typography & Actions -->
       <div class="space-y-8 z-10">
-        
         <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-brand">
           <span class="w-2 h-2 rounded-full bg-brand animate-pulse"></span>
           <span class="text-[11px] font-bold uppercase tracking-widest">Digital Campus Network</span>
         </div>
-
-        <h1 class="text-5xl lg:text-7xl font-black tracking-tight leading-[1.1] text-slate-900">
-          Welcome to <br>
-          <span class="text-brand">HIETFINDIT.</span>
-        </h1>
-
-        <p class="text-lg text-slate-600 leading-relaxed font-medium max-w-lg">
-          Your central hub for all campus services. To ensure security and personalized access, please log in to explore the faculty directory, track transport, or access your dashboard.
-        </p>
-
-        <!-- Dynamic Action Buttons -->
+        <h1 class="text-5xl lg:text-7xl font-black tracking-tight leading-[1.1] text-slate-900">Welcome to <br><span class="text-brand">HIETFINDIT.</span></h1>
+        <p class="text-lg text-slate-600 leading-relaxed font-medium max-w-lg">Your central hub for all campus services. To ensure security and personalized access, please log in to explore the faculty directory, track transport, or access your dashboard.</p>
         <div class="flex flex-wrap items-center gap-4 pt-4">
-          <a href="login.html" class="bg-slate-900 hover:bg-slate-800 text-white px-8 py-4 rounded-xl font-bold transition-colors shadow-lg flex items-center gap-3">
-            <i data-lucide="log-in" class="w-5 h-5"></i> Login to Access
-          </a>
-          <a href="dashboard.html" class="bg-white hover:bg-slate-50 text-slate-700 border-2 border-slate-200 px-8 py-4 rounded-xl font-bold transition-colors flex items-center gap-2">
-            Student Dashboard
-          </a>
+          <a href="login.html" class="bg-slate-900 hover:bg-slate-800 text-white px-8 py-4 rounded-xl font-bold transition-colors shadow-lg flex items-center gap-3"><i data-lucide="log-in" class="w-5 h-5"></i> Login to Access</a>
+          <a href="dashboard.html" class="bg-white hover:bg-slate-50 text-slate-700 border-2 border-slate-200 px-8 py-4 rounded-xl font-bold transition-colors flex items-center gap-2">Student Dashboard</a>
         </div>
-        
-        <!-- Quick Info -->
         <div class="flex items-center gap-6 pt-6 opacity-75">
-          <p class="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
-            <i data-lucide="lock" class="w-4 h-4"></i> Secure Login Required for features
-          </p>
+          <p class="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2"><i data-lucide="lock" class="w-4 h-4"></i> Secure Login Required for features</p>
         </div>
       </div>
-
-      <!-- Right Column: Professional Floating Image -->
       <div class="relative w-full flex justify-center lg:justify-end">
-        
-        <!-- Subtle Glow -->
         <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-blue-200/40 rounded-full blur-[80px] -z-10"></div>
-
-        <!-- The Floating Image Container -->
         <div class="relative w-full max-w-md lg:max-w-lg image-float-pro bg-white p-2.5 rounded-2xl border border-slate-100">
-          
-          <img 
-            src="./1789033601541.jpg" 
-            onerror="this.onerror=null; this.src='./images/1789033601541.jpg';" 
-            alt="HIET College Campus" 
-            class="w-full h-auto min-h-[420px] object-cover rounded-xl"
-          >
-
-          <!-- Status Tag -->
+          <img src="./1789033601541.jpg" onerror="this.onerror=null; this.src='./images/1789033601541.jpg';" alt="HIET College Campus" class="w-full h-auto min-h-[420px] object-cover rounded-xl">
           <div class="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-white text-slate-800 px-6 py-2.5 rounded-full border border-slate-200 shadow-lg flex items-center gap-3 whitespace-nowrap">
             <div class="w-2 h-2 rounded-full bg-emerald-500"></div>
             <p class="text-xs font-bold uppercase tracking-widest">Campus Portal Active</p>
           </div>
-          
         </div>
-
       </div>
-
     </div>
   </main>
 

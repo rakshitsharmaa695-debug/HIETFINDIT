@@ -7,9 +7,14 @@ require('dotenv').config();
 
 const app = express();
 
-// CORS configuration for Netlify and Local testing
+// CORS configuration for Firebase, Netlify, and Local testing
 app.use(cors({
-  origin: ['https://hietfindit.netlify.app', 'http://localhost:5500', 'http://127.0.0.1:5500'],
+  origin: [
+    'https://hietfindit.web.app', // <--- Aapka naya Firebase URL add ho gaya
+    'https://hietfindit.netlify.app', 
+    'http://localhost:5500', 
+    'http://127.0.0.1:5500'
+  ],
   credentials: true
 }));
 
