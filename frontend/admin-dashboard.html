@@ -5,101 +5,295 @@
   <title>Admin Dashboard - HIETFINDIT</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .nav-btn.active { background-color: #e2e8f0; color: #1e293b; font-weight: bold; border-left: 4px solid #3b82f6; }
+  </style>
 </head>
-<body class="bg-slate-100 text-slate-800 font-sans min-h-screen">
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
 
-  <nav class="bg-slate-900 text-white p-4 flex justify-between items-center shadow-lg">
-    <h1 class="text-xl font-bold flex items-center gap-2"><i data-lucide="shield-check"></i> Admin Dashboard</h1>
-    <a href="index.html" class="bg-red-500 hover:bg-red-600 px-4 py-2 rounded-lg text-sm font-bold transition">Logout Admin</a>
+  <nav class="bg-slate-900 text-white p-4 flex justify-between items-center shadow-md z-10 relative">
+    <div class="flex items-center gap-3">
+      <div class="bg-blue-600 p-1.5 rounded text-white font-black">HF</div>
+      <h1 class="text-xl font-bold tracking-wide">Admin Portal</h1>
+    </div>
+    <a href="index.html" class="bg-red-500 hover:bg-red-600 px-5 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2">
+      <i data-lucide="power" class="w-4 h-4"></i> Logout
+    </a>
   </nav>
 
-  <div class="max-w-7xl mx-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
-    <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 lg:col-span-1">
-      <h2 class="text-lg font-bold mb-4 border-b pb-2">Add New Faculty</h2>
-      <form id="facultyForm" class="space-y-3">
-        <input type="text" id="fName" placeholder="Full Name" required class="w-full border rounded-lg p-2 text-sm">
-        <input type="text" id="fDept" placeholder="Department (e.g. CSE)" required class="w-full border rounded-lg p-2 text-sm">
-        <input type="text" id="fDesig" placeholder="Designation (e.g. HOD)" required class="w-full border rounded-lg p-2 text-sm">
-        <input type="text" id="fCabin" placeholder="Cabin / Room No." class="w-full border rounded-lg p-2 text-sm">
-        <label class="block text-xs font-semibold text-slate-500 mt-2">Upload Photo</label>
-        <input type="file" id="fPhoto" accept="image/*" class="w-full border rounded-lg p-1 text-sm bg-slate-50">
-        <button id="submitBtn" type="submit" class="w-full bg-emerald-600 text-white font-bold p-2 rounded-lg hover:bg-emerald-700 mt-2">Add to Directory</button>
-      </form>
-    </div>
+  <div class="flex flex-1 overflow-hidden">
+    <!-- Sidebar -->
+    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col py-6 overflow-y-auto">
+      <p class="px-6 text-xs font-bold text-slate-400 uppercase tracking-widest mb-4">Management</p>
+      <button onclick="switchTab('faculty')" id="btn-faculty" class="nav-btn active flex items-center gap-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition text-left">
+        <i data-lucide="users" class="w-5 h-5"></i> Faculty Directory
+      </button>
+      <button onclick="switchTab('transport')" id="btn-transport" class="nav-btn flex items-center gap-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition text-left">
+        <i data-lucide="bus" class="w-5 h-5"></i> Transport Fleet
+      </button>
+      <button onclick="switchTab('complaints')" id="btn-complaints" class="nav-btn flex items-center gap-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition text-left">
+        <i data-lucide="message-square-warning" class="w-5 h-5"></i> Student Complaints
+      </button>
+      <button onclick="switchTab('lostfound')" id="btn-lostfound" class="nav-btn flex items-center gap-3 px-6 py-3 text-slate-600 hover:bg-slate-50 transition text-left">
+        <i data-lucide="box" class="w-5 h-5"></i> Lost & Found
+      </button>
+    </aside>
 
-    <div class="bg-white p-6 rounded-xl shadow-md border border-slate-200 lg:col-span-2 overflow-x-auto">
-      <h2 class="text-lg font-bold mb-4 border-b pb-2">Manage Faculty Directory</h2>
-      <table class="w-full text-left text-sm">
-        <thead class="bg-slate-50 text-slate-500">
-          <tr>
-            <th class="p-3 rounded-tl-lg">Photo</th>
-            <th class="p-3">Details</th>
-            <th class="p-3">Department</th>
-            <th class="p-3 rounded-tr-lg">Action</th>
-          </tr>
-        </thead>
-        <tbody id="facultyTableBody">
-          <tr><td colspan="4" class="p-4 text-center text-slate-500">Loading data...</td></tr>
-        </tbody>
-      </table>
-    </div>
+    <!-- Content Area -->
+    <main class="flex-1 p-8 overflow-y-auto bg-slate-50">
+      
+      <!-- ================= 1. FACULTY TAB (No Changes) ================= -->
+      <div id="tab-faculty" class="tab-content active">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 lg:col-span-1">
+            <h2 class="text-lg font-bold mb-4 border-b pb-2 text-slate-800">Add New Faculty</h2>
+            <form id="facultyForm" class="space-y-3">
+              <input type="text" id="fName" placeholder="Full Name" required class="w-full border rounded-lg p-2.5 text-sm bg-slate-50">
+              <input type="text" id="fDept" placeholder="Department (e.g. CSE)" required class="w-full border rounded-lg p-2.5 text-sm bg-slate-50">
+              <input type="text" id="fDesig" placeholder="Designation (e.g. HOD)" required class="w-full border rounded-lg p-2.5 text-sm bg-slate-50">
+              <input type="text" id="fCabin" placeholder="Cabin / Room No." class="w-full border rounded-lg p-2.5 text-sm bg-slate-50">
+              <label class="block text-xs font-semibold text-slate-500 mt-2">Upload Photo</label>
+              <input type="file" id="fPhoto" accept="image/*" class="w-full border rounded-lg p-1.5 text-sm bg-slate-50">
+              <button id="fSubmitBtn" type="submit" class="w-full bg-blue-600 text-white font-bold p-2.5 rounded-lg hover:bg-blue-700 mt-2 transition">Add to Directory</button>
+            </form>
+          </div>
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 lg:col-span-2 overflow-x-auto">
+            <h2 class="text-lg font-bold mb-4 border-b pb-2 text-slate-800">Manage Faculty</h2>
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-100 text-slate-600 font-semibold">
+                <tr><th class="p-3 rounded-tl-lg">Photo</th><th class="p-3">Details</th><th class="p-3">Department</th><th class="p-3 rounded-tr-lg">Action</th></tr>
+              </thead>
+              <tbody id="facultyTableBody">
+                <tr><td colspan="4" class="p-4 text-center text-slate-500">Loading data...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 2. TRANSPORT TAB (UPDATED) ================= -->
+      <div id="tab-transport" class="tab-content">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Add Form (Expanded for new inputs) -->
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 lg:col-span-5">
+            <h2 class="text-lg font-bold mb-4 border-b pb-2 text-slate-800">Register New Bus</h2>
+            <form id="transportForm" class="space-y-3">
+              <div class="grid grid-cols-2 gap-3">
+                <input type="text" id="tBusNo" placeholder="Bus No (HP-01-1234)" required class="w-full border rounded-lg p-2.5 text-sm bg-slate-50">
+                <input type="text" id="tRCNo" placeholder="Registered RC No." required class="w-full border rounded-lg p-2.5 text-sm bg-slate-50">
+              </div>
+              <input type="text" id="tDriver" placeholder="Driver Name" required class="w-full border rounded-lg p-2.5 text-sm bg-slate-50">
+              <input type="text" id="tRoute" placeholder="Route (e.g. City to Campus)" required class="w-full border rounded-lg p-2.5 text-sm bg-slate-50">
+              <input type="text" id="tStops" placeholder="Major Stops (Comma separated)" required class="w-full border rounded-lg p-2.5 text-sm bg-slate-50">
+              <input type="text" id="tTiming" placeholder="Timing (e.g. 08:00 AM)" required class="w-full border rounded-lg p-2.5 text-sm bg-slate-50">
+              
+              <div class="grid grid-cols-2 gap-3 pt-2">
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Bus Photo</label>
+                  <input type="file" id="tBusPhoto" accept="image/*" class="w-full border rounded-lg p-1.5 text-xs bg-slate-50">
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Driver Photo</label>
+                  <input type="file" id="tDriverPhoto" accept="image/*" class="w-full border rounded-lg p-1.5 text-xs bg-slate-50">
+                </div>
+              </div>
+
+              <button id="tSubmitBtn" type="submit" class="w-full bg-emerald-600 text-white font-bold p-2.5 rounded-lg hover:bg-emerald-700 mt-4 transition">Register Vehicle</button>
+            </form>
+          </div>
+          <!-- Table -->
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 lg:col-span-7 overflow-x-auto">
+            <h2 class="text-lg font-bold mb-4 border-b pb-2 text-slate-800">Transport Fleet</h2>
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-100 text-slate-600 font-semibold">
+                <tr><th class="p-3 rounded-tl-lg">Vehicle / Driver</th><th class="p-3">Route Details</th><th class="p-3 rounded-tr-lg">Action</th></tr>
+              </thead>
+              <tbody id="transportTableBody">
+                <tr><td colspan="3" class="p-4 text-center text-slate-500">Loading data...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= 3. COMPLAINTS TAB (No Changes) ================= -->
+      <div id="tab-complaints" class="tab-content">
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
+          <h2 class="text-lg font-bold mb-4 border-b pb-2 text-slate-800 flex justify-between">
+            Student Complaints <span class="text-xs bg-red-100 text-red-600 px-2 py-1 rounded-full" id="pendingCount">0 Pending</span>
+          </h2>
+          <table class="w-full text-left text-sm">
+            <thead class="bg-slate-100 text-slate-600 font-semibold">
+              <tr><th class="p-3 rounded-tl-lg">Student</th><th class="p-3">Complaint Details</th><th class="p-3">Date</th><th class="p-3">Status</th><th class="p-3 rounded-tr-lg">Action</th></tr>
+            </thead>
+            <tbody id="complaintsTableBody">
+              <tr><td colspan="5" class="p-4 text-center text-slate-500">Loading data...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ================= 4. LOST & FOUND TAB (UPDATED) ================= -->
+      <div id="tab-lostfound" class="tab-content">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Add Form -->
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 lg:col-span-1">
+            <h2 class="text-lg font-bold mb-4 border-b pb-2 text-slate-800">Report Found Item</h2>
+            <form id="lostForm" class="space-y-3">
+              <input type="text" id="lItem" placeholder="Item Name (e.g. Blue Wallet)" required class="w-full border rounded-lg p-2.5 text-sm bg-slate-50">
+              <textarea id="lDesc" placeholder="Description & Contents" required class="w-full border rounded-lg p-2.5 text-sm bg-slate-50 h-20"></textarea>
+              <input type="text" id="lLoc" placeholder="Found Location" required class="w-full border rounded-lg p-2.5 text-sm bg-slate-50">
+              <label class="block text-xs font-semibold text-slate-500 mt-2">Item Photo</label>
+              <input type="file" id="lPhoto" accept="image/*" class="w-full border rounded-lg p-1.5 text-sm bg-slate-50">
+              <button id="lSubmitBtn" type="submit" class="w-full bg-indigo-600 text-white font-bold p-2.5 rounded-lg hover:bg-indigo-700 mt-2 transition">Add Item</button>
+            </form>
+          </div>
+          <!-- Table -->
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 lg:col-span-2 overflow-x-auto">
+            <h2 class="text-lg font-bold mb-4 border-b pb-2 text-slate-800">Lost & Found Inventory</h2>
+            <table class="w-full text-left text-sm">
+              <thead class="bg-slate-100 text-slate-600 font-semibold">
+                <tr><th class="p-3 rounded-tl-lg">Photo</th><th class="p-3">Item Details</th><th class="p-3">Status</th><th class="p-3 rounded-tr-lg">Action</th></tr>
+              </thead>
+              <tbody id="lostTableBody">
+                <tr><td colspan="4" class="p-4 text-center text-slate-500">Loading data...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </main>
   </div>
 
   <script>
     lucide.createIcons();
     const API_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://hietfindit-lqzt.onrender.com/api';
-    const form = document.getElementById('facultyForm');
-    const tableBody = document.getElementById('facultyTableBody');
-    const submitBtn = document.getElementById('submitBtn');
 
-    async function loadFaculty() {
+    // Helper: Convert File to Base64
+    const toBase64 = f => new Promise((res, rej) => { const r = new FileReader(); r.readAsDataURL(f); r.onload = () => res(r.result); r.onerror = e => rej(e); });
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(`tab-${tabName}`).classList.add('active');
+      document.getElementById(`btn-${tabName}`).classList.add('active');
+      if(tabName === 'faculty') loadFaculty();
+      if(tabName === 'transport') loadTransport();
+      if(tabName === 'complaints') loadComplaints();
+      if(tabName === 'lostfound') loadLostFound();
+    }
+
+    // --- 1. FACULTY ---
+    async function loadFaculty() { /* Same as before */ 
+      const tbody = document.getElementById('facultyTableBody');
+      try { const res = await fetch(`${API_URL}/faculty`); const data = await res.json();
+        if(data.length === 0) return tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-500">No faculty added yet.</td></tr>';
+        tbody.innerHTML = data.map(f => `<tr class="border-b hover:bg-slate-50"><td class="p-3"><img src="${f.photo || 'https://via.placeholder.com/50'}" class="w-10 h-10 rounded-full object-cover border"></td><td class="p-3"><p class="font-bold">${f.name}</p><p class="text-xs text-slate-500">${f.designation}</p></td><td class="p-3 font-semibold text-blue-600">${f.department}</td><td class="p-3"><button onclick="deleteFaculty(${f.id})" class="text-red-500 p-2 rounded hover:bg-red-50"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td></tr>`).join('');
+        lucide.createIcons(); } catch (err) {}
+    }
+    document.getElementById('facultyForm').addEventListener('submit', async (e) => {
+      e.preventDefault(); const file = document.getElementById('fPhoto').files[0]; const photoBase64 = file ? await toBase64(file) : '';
+      const body = { name: document.getElementById('fName').value, department: document.getElementById('fDept').value, designation: document.getElementById('fDesig').value, cabin: document.getElementById('fCabin').value, photo: photoBase64 };
+      try { await fetch(`${API_URL}/faculty`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); e.target.reset(); loadFaculty(); } catch (err) {}
+    });
+    async function deleteFaculty(id) { if(confirm('Delete?')) { await fetch(`${API_URL}/faculty/${id}`, { method: 'DELETE' }); loadFaculty(); } }
+
+    // --- 2. TRANSPORT (UPDATED) ---
+    async function loadTransport() {
+      const tbody = document.getElementById('transportTableBody');
       try {
-        const res = await fetch(`${API_URL}/faculty`);
-        const data = await res.json();
-        tableBody.innerHTML = '';
-        if(data.length === 0) return tableBody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-500">No faculty added yet.</td></tr>';
+        const res = await fetch(`${API_URL}/transport`); const data = await res.json();
+        if(data.length === 0) return tbody.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-slate-500">No buses registered.</td></tr>';
         
-        data.forEach(faculty => {
-          const photoUrl = faculty.photo || 'https://via.placeholder.com/50';
-          const tr = document.createElement('tr');
-          tr.className = 'border-b hover:bg-slate-50';
-          tr.innerHTML = `
-            <td class="p-3"><img src="${photoUrl}" class="w-12 h-12 rounded-full object-cover border"></td>
-            <td class="p-3"><p class="font-bold text-slate-800">${faculty.name}</p><p class="text-xs text-slate-500">${faculty.designation} | ${faculty.cabin || 'N/A'}</p></td>
-            <td class="p-3 font-semibold text-indigo-600">${faculty.department}</td>
-            <td class="p-3"><button onclick="deleteFaculty(${faculty.id})" class="text-red-500 hover:bg-red-50 p-2 rounded"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
-          `;
-          tableBody.appendChild(tr);
-        });
+        tbody.innerHTML = data.map(b => `
+          <tr class="border-b hover:bg-slate-50 align-top">
+            <td class="p-3">
+              <div class="flex gap-3">
+                <img src="${b.bus_photo || 'https://via.placeholder.com/60?text=Bus'}" class="w-16 h-12 object-cover rounded shadow-sm border border-slate-200">
+                <img src="${b.driver_photo || 'https://via.placeholder.com/60?text=Driver'}" class="w-12 h-12 rounded-full object-cover shadow-sm border border-slate-200">
+              </div>
+              <p class="font-black text-slate-800 mt-2">${b.bus_number}</p>
+              <p class="text-xs text-slate-500 font-mono">RC: ${b.rc_number || 'N/A'}</p>
+              <p class="text-xs font-bold text-indigo-600 mt-1"><i data-lucide="user" class="w-3 h-3 inline"></i> ${b.driver_name || 'N/A'}</p>
+            </td>
+            <td class="p-3">
+              <p class="font-bold text-slate-700">${b.route_name}</p>
+              <p class="text-xs text-slate-500 mt-1 w-48 truncate">Stops: ${b.stops}</p>
+              <p class="text-xs text-emerald-600 font-bold mt-2"><i data-lucide="clock" class="w-3 h-3 inline"></i> ${b.timing}</p>
+            </td>
+            <td class="p-3"><button onclick="deleteTransport(${b.id})" class="text-red-500 hover:bg-red-50 p-2 rounded mt-4"><i data-lucide="trash-2" class="w-5 h-5"></i></button></td>
+          </tr>
+        `).join('');
         lucide.createIcons();
       } catch (err) { console.error(err); }
     }
 
-    form.addEventListener('submit', async (e) => {
+    document.getElementById('transportForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      submitBtn.textContent = 'Uploading...'; submitBtn.disabled = true;
-      const file = document.getElementById('fPhoto').files[0];
+      const btn = document.getElementById('tSubmitBtn'); btn.textContent = 'Saving...'; btn.disabled = true;
       
-      const toBase64 = f => new Promise((res, rej) => { const r = new FileReader(); r.readAsDataURL(f); r.onload = () => res(r.result); r.onerror = e => rej(e); });
-      const photoBase64 = file ? await toBase64(file) : '';
+      const busFile = document.getElementById('tBusPhoto').files[0];
+      const driverFile = document.getElementById('tDriverPhoto').files[0];
+      const busPhoto64 = busFile ? await toBase64(busFile) : '';
+      const driverPhoto64 = driverFile ? await toBase64(driverFile) : '';
 
-      const bodyData = { 
-        name: document.getElementById('fName').value, department: document.getElementById('fDept').value, 
-        designation: document.getElementById('fDesig').value, cabin: document.getElementById('fCabin').value, photo: photoBase64 
+      const body = { 
+        bus_number: document.getElementById('tBusNo').value, rc_number: document.getElementById('tRCNo').value,
+        driver_name: document.getElementById('tDriver').value, route_name: document.getElementById('tRoute').value, 
+        stops: document.getElementById('tStops').value, timing: document.getElementById('tTiming').value,
+        bus_photo: busPhoto64, driver_photo: driverPhoto64
       };
-
-      try {
-        await fetch(`${API_URL}/faculty`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(bodyData) });
-        form.reset(); loadFaculty();
-      } catch (err) { alert('Error adding faculty'); } finally { submitBtn.textContent = 'Add to Directory'; submitBtn.disabled = false; }
+      
+      try { await fetch(`${API_URL}/transport`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); e.target.reset(); loadTransport(); } 
+      catch (err) { alert('Error saving bus'); } finally { btn.textContent = 'Register Vehicle'; btn.disabled = false; }
     });
+    async function deleteTransport(id) { if(confirm('Remove this bus record?')) { await fetch(`${API_URL}/transport/${id}`, { method: 'DELETE' }); loadTransport(); } }
 
-    async function deleteFaculty(id) {
-      if(confirm('Delete this faculty member?')) {
-        await fetch(`${API_URL}/faculty/${id}`, { method: 'DELETE' });
-        loadFaculty();
-      }
+    // --- 3. COMPLAINTS ---
+    async function loadComplaints() { /* Same as before */
+      const tbody = document.getElementById('complaintsTableBody');
+      try { const res = await fetch(`${API_URL}/complaints`); const data = await res.json();
+        document.getElementById('pendingCount').textContent = `${data.filter(c => c.status === 'Pending').length} Pending`;
+        if(data.length === 0) return tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-500">No complaints found.</td></tr>';
+        tbody.innerHTML = data.map(c => `<tr class="border-b hover:bg-slate-50"><td class="p-3"><p class="font-bold">${c.student_name}</p><p class="text-xs">${c.student_email}</p></td><td class="p-3"><p class="font-bold">${c.title}</p></td><td class="p-3 text-xs">${new Date(c.created_at).toLocaleDateString()}</td><td class="p-3"><span class="px-2 py-1 text-xs font-bold rounded-full ${c.status === 'Resolved' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${c.status}</span></td><td class="p-3">${c.status === 'Pending' ? `<button onclick="resolveComplaint(${c.id})" class="text-emerald-600 border border-emerald-200 text-xs px-2 py-1 rounded">Resolve</button>` : 'Done'}</td></tr>`).join('');
+      } catch (err) {}
     }
+    async function resolveComplaint(id) { if(confirm('Mark as resolved?')) { await fetch(`${API_URL}/complaints/${id}`, { method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'Resolved' }) }); loadComplaints(); } }
+
+    // --- 4. LOST & FOUND (UPDATED) ---
+    async function loadLostFound() {
+      const tbody = document.getElementById('lostTableBody');
+      try {
+        const res = await fetch(`${API_URL}/lost-found`); const data = await res.json();
+        if(data.length === 0) return tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-500">No items reported.</td></tr>';
+        
+        tbody.innerHTML = data.map(i => `
+          <tr class="border-b hover:bg-slate-50">
+            <td class="p-3"><img src="${i.item_photo || 'https://via.placeholder.com/50?text=Item'}" class="w-12 h-12 object-cover rounded shadow-sm border border-slate-200"></td>
+            <td class="p-3"><p class="font-bold text-slate-800">${i.item_name}</p><p class="text-xs text-slate-500">${i.location} | ${new Date(i.date_reported).toLocaleDateString()}</p></td>
+            <td class="p-3"><span class="px-2 py-1 text-xs font-bold rounded-full ${i.status === 'Claimed' ? 'bg-slate-100 text-slate-500' : 'bg-blue-100 text-blue-700'}">${i.status}</span></td>
+            <td class="p-3">${i.status === 'Unclaimed' ? `<button onclick="claimItem(${i.id})" class="text-blue-600 border border-blue-200 text-xs font-bold px-2 py-1 rounded">Mark Claimed</button>` : '<span class="text-xs text-slate-400">Handed Over</span>'}</td>
+          </tr>
+        `).join('');
+      } catch (err) {}
+    }
+
+    document.getElementById('lostForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('lSubmitBtn'); btn.textContent = 'Saving...'; btn.disabled = true;
+      const file = document.getElementById('lPhoto').files[0];
+      const itemPhoto64 = file ? await toBase64(file) : '';
+
+      const body = { item_name: document.getElementById('lItem').value, description: document.getElementById('lDesc').value, location: document.getElementById('lLoc').value, item_photo: itemPhoto64 };
+      try { await fetch(`${API_URL}/lost-found`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) }); e.target.reset(); loadLostFound(); } 
+      catch (err) { alert('Error adding item'); } finally { btn.textContent = 'Add Item'; btn.disabled = false; }
+    });
+    async function claimItem(id) { if(confirm('Has the owner collected this item?')) { await fetch(`${API_URL}/lost-found/${id}`, { method: 'PUT' }); loadLostFound(); } }
+
+    // Init
     loadFaculty();
   </script>
 </body>

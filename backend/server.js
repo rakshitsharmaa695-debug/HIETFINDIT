@@ -48,8 +48,47 @@ const initDB = async () => {
         cabin VARCHAR(100),
         photo TEXT
       );
+
+      -- 1. Complaints Table (Student submits, Admin views)
+      CREATE TABLE IF NOT EXISTS complaints (
+        id SERIAL PRIMARY KEY,
+        student_name VARCHAR(100),
+        student_email VARCHAR(100),
+        title VARCHAR(200),
+        description TEXT,
+        status VARCHAR(50) DEFAULT 'Pending',
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      -- 2. Transport Table (Admin adds bus info)
+      CREATE TABLE IF NOT EXISTS transport (
+        id SERIAL PRIMARY KEY,
+        bus_number VARCHAR(50),
+        route_name VARCHAR(200),
+        stops TEXT,
+        timing VARCHAR(100)
+      );
+
+      -- ADD NEW COLUMNS SAFELY FOR TRANSPORT (Photos, RC, Driver)
+      ALTER TABLE transport ADD COLUMN IF NOT EXISTS rc_number VARCHAR(100);
+      ALTER TABLE transport ADD COLUMN IF NOT EXISTS driver_name VARCHAR(100);
+      ALTER TABLE transport ADD COLUMN IF NOT EXISTS bus_photo TEXT;
+      ALTER TABLE transport ADD COLUMN IF NOT EXISTS driver_photo TEXT;
+
+      -- 3. Lost & Found Table (Admin manages)
+      CREATE TABLE IF NOT EXISTS lost_found (
+        id SERIAL PRIMARY KEY,
+        item_name VARCHAR(100),
+        description TEXT,
+        location VARCHAR(100),
+        status VARCHAR(50) DEFAULT 'Unclaimed',
+        date_reported TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+
+      -- ADD NEW COLUMN SAFELY FOR LOST & FOUND (Item Photo)
+      ALTER TABLE lost_found ADD COLUMN IF NOT EXISTS item_photo TEXT;
     `);
-    console.log('Connected to Cloud PostgreSQL Database & Tables Verified');
+    console.log('Connected to Cloud PostgreSQL Database & All 5 Tables Verified');
   } catch (err) {
     console.error('DB Init Error:', err);
   }
@@ -122,7 +161,107 @@ app.delete('/api/faculty/:id', async (req, res) => {
   }
 });
 
-app.get('/', (req, res) => res.send('HIETFINDIT Server is Running!'));
+// --- 3. COMPLAINTS ROUTES ---
+app.post('/api/complaints', async (req, res) => {
+  const { student_name, student_email, title, description } = req.body;
+  try {
+    const newComplaint = await pool.query(
+      'INSERT INTO complaints (student_name, student_email, title, description) VALUES ($1, $2, $3, $4) RETURNING *',
+      [student_name, student_email, title, description]
+    );
+    res.status(201).json(newComplaint.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/complaints', async (req, res) => {
+  try {
+    const allComplaints = await pool.query('SELECT * FROM complaints ORDER BY id DESC');
+    res.json(allComplaints.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.put('/api/complaints/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+    await pool.query('UPDATE complaints SET status = $1 WHERE id = $2', [status, id]);
+    res.json({ message: 'Complaint Status Updated' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- 4. TRANSPORT ROUTES (UPDATED) ---
+app.post('/api/transport', async (req, res) => {
+  const { bus_number, route_name, stops, timing, rc_number, driver_name, bus_photo, driver_photo } = req.body;
+  try {
+    const newBus = await pool.query(
+      'INSERT INTO transport (bus_number, route_name, stops, timing, rc_number, driver_name, bus_photo, driver_photo) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *',
+      [bus_number, route_name, stops, timing, rc_number, driver_name, bus_photo, driver_photo]
+    );
+    res.status(201).json(newBus.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/transport', async (req, res) => {
+  try {
+    const allBuses = await pool.query('SELECT * FROM transport ORDER BY id DESC');
+    res.json(allBuses.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/transport/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await pool.query('DELETE FROM transport WHERE id = $1', [id]);
+    res.json({ message: 'Bus Route Deleted' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// --- 5. LOST & FOUND ROUTES (UPDATED) ---
+app.post('/api/lost-found', async (req, res) => {
+  const { item_name, description, location, item_photo } = req.body;
+  try {
+    const newItem = await pool.query(
+      'INSERT INTO lost_found (item_name, description, location, item_photo) VALUES ($1, $2, $3, $4) RETURNING *',
+      [item_name, description, location, item_photo]
+    );
+    res.status(201).json(newItem.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/lost-found', async (req, res) => {
+  try {
+    const allItems = await pool.query('SELECT * FROM lost_found ORDER BY id DESC');
+    res.json(allItems.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.put('/api/lost-found/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await pool.query("UPDATE lost_found SET status = 'Claimed' WHERE id = $1", [id]);
+    res.json({ message: 'Item Marked as Claimed' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/', (req, res) => res.send('HIETFINDIT Extended Server is Running!'));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
