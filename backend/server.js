@@ -6,8 +6,14 @@ const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-app.use(cors());
-// IMPORTANT: Increased limit to 10mb for uploading Base64 photos
+
+// Updated CORS configuration for your Netlify URL and local testing
+app.use(cors({
+  origin: ['https://hietfindit.netlify.app', 'http://localhost:5500', 'http://127.0.0.1:5500'],
+  credentials: true
+}));
+
+// Increased limit to 10mb for uploading Base64 photos
 app.use(express.json({ limit: '10mb' })); 
 
 const pool = new Pool({
@@ -36,9 +42,9 @@ const initDB = async () => {
         photo TEXT
       );
     `);
-    console.log('Connected to Cloud PostgreSQL Database');
+    console.log('Connected to Cloud PostgreSQL Database');[cite: 1]
   } catch (err) {
-    console.error('DB Init Error:', err);
+    console.error('DB Init Error:', err);[cite: 1]
   }
 };
 initDB();
@@ -55,7 +61,6 @@ app.post('/api/auth/register', async (req, res) => {
     );
     res.json(newUser.rows[0]);
   } catch (err) {
-    // YAHAN CHANGE KIYA HAI: Ab ye frontend par seedha asli error bhejegaa
     console.error("REGISTER ERROR:", err);
     res.status(500).json({ error: err.message });
   }
