@@ -21,7 +21,7 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-// Initialize Database Tables & Auto-Fix missing columns
+// Initialize Database Tables & Fix Column Mismatches
 const initDB = async () => {
   try {
     await pool.query(`
@@ -33,7 +33,8 @@ const initDB = async () => {
         role VARCHAR(50)
       );
 
-      -- Ensure columns exist if table was already created previously
+      -- Fix any old column mismatch safely
+      ALTER TABLE users DROP COLUMN IF EXISTS password_hash;
       ALTER TABLE users ADD COLUMN IF NOT EXISTS name VARCHAR(100);
       ALTER TABLE users ADD COLUMN IF NOT EXISTS email VARCHAR(100);
       ALTER TABLE users ADD COLUMN IF NOT EXISTS password VARCHAR(255);
