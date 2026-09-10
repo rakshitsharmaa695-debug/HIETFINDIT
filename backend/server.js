@@ -55,7 +55,9 @@ app.post('/api/auth/register', async (req, res) => {
     );
     res.json(newUser.rows[0]);
   } catch (err) {
-    res.status(500).json({ error: 'User already exists or DB Error' });
+    // YAHAN CHANGE KIYA HAI: Ab ye frontend par seedha asli error bhejegaa
+    console.error("REGISTER ERROR:", err);
+    res.status(500).json({ error: err.message });
   }
 });
 

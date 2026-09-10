@@ -7,33 +7,35 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    /* Premium Parallax Background CSS */
+    /* Premium Parallax Background with Fallback */
     .hero-section {
-      background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.4), rgba(15, 23, 42, 0.95)), url('images/1789033601541.jpg');
+      background-color: #0f172a; /* Dark blue fallback color */
+      /* Yahan './' ka matlab hai ki photo index.html wale same folder mein hi hai */
+      background-image: linear-gradient(to bottom, rgba(15, 23, 42, 0.6), rgba(15, 23, 42, 0.95)), url('./1789033601541.jpg');
       background-size: cover;
       background-position: center;
-      background-attachment: fixed; /* Isse scroll karne par 3D jaisa effect aayega */
-    }
-    
-    /* Smooth hover animation for cards */
-    .hover-card {
-      transition: all 0.3s ease;
-    }
-    .hover-card:hover {
-      transform: translateY(-10px);
-      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      background-attachment: fixed;
     }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
 
-  <!-- Top Navigation Bar -->
-  <nav class="bg-white/90 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
+  <!-- Top Navigation Bar (Clean & Professional) -->
+  <nav class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      
       <!-- Logo -->
       <div class="flex items-center space-x-3">
-        <div class="bg-indigo-600 p-2 rounded-lg text-white font-black text-lg shadow-md">HF</div>
+        <div class="bg-indigo-600 p-2 rounded-lg text-white font-black text-lg shadow-lg">HF</div>
         <span class="text-xl font-bold tracking-tight text-slate-900">HIET<span class="text-indigo-600">FINDIT</span></span>
+      </div>
+
+      <!-- Feature Menu (Top Center) -->
+      <div class="hidden lg:flex items-center space-x-6 bg-slate-50 px-6 py-2 rounded-full border border-slate-200 shadow-inner">
+         <a href="faculty-directory.html" class="text-slate-600 hover:text-indigo-600 font-bold text-sm flex items-center gap-1.5 transition"><i data-lucide="users" class="w-4 h-4"></i> Faculty Directory</a>
+         <a href="#" class="text-slate-600 hover:text-emerald-600 font-bold text-sm flex items-center gap-1.5 transition"><i data-lucide="message-square-warning" class="w-4 h-4"></i> Complaints</a>
+         <a href="#" class="text-slate-600 hover:text-amber-600 font-bold text-sm flex items-center gap-1.5 transition"><i data-lucide="bus" class="w-4 h-4"></i> Transport Info</a>
+         <a href="#" class="text-slate-600 hover:text-blue-600 font-bold text-sm flex items-center gap-1.5 transition"><i data-lucide="search" class="w-4 h-4"></i> Lost & Found</a>
       </div>
 
       <!-- User Profile & Logout -->
@@ -42,73 +44,44 @@
           <p id="userNameDisplay" class="text-sm font-bold text-slate-900">Loading...</p>
           <p id="userRoleDisplay" class="text-xs text-indigo-600 font-bold uppercase">Role</p>
         </div>
-        <button id="logoutBtn" class="bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 p-2 rounded-lg transition" title="Logout">
+        <button id="logoutBtn" class="bg-red-50 text-red-600 hover:bg-red-100 hover:text-red-700 p-2.5 rounded-lg transition shadow-sm" title="Logout">
           <i data-lucide="log-out" class="w-5 h-5"></i>
         </button>
       </div>
     </div>
   </nav>
 
-  <!-- Main Hero Section with College Photo -->
-  <div class="hero-section min-h-[65vh] flex flex-col items-center justify-center text-white px-4 relative pt-10 pb-24">
-    <div class="max-w-4xl mx-auto text-center space-y-4">
-      <div class="inline-block bg-indigo-500/20 border border-indigo-400/30 backdrop-blur-sm px-4 py-1.5 rounded-full text-indigo-200 text-sm font-semibold mb-4 tracking-wide">
+  <!-- Main Hero Section (Full Screen College Background) -->
+  <div class="hero-section flex-grow flex flex-col items-center justify-center text-white px-4 relative">
+    <div class="max-w-4xl mx-auto text-center space-y-6">
+      
+      <!-- Welcome Badge -->
+      <div class="inline-block bg-white/10 border border-white/20 backdrop-blur-md px-5 py-2 rounded-full text-indigo-100 text-sm font-bold tracking-widest uppercase shadow-lg">
         Welcome to Smart Campus
       </div>
-      <h1 class="text-4xl md:text-6xl font-black tracking-tight drop-shadow-lg leading-tight">
-        Himachal Institute of <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-emerald-400">Engineering & Technology</span>
-      </h1>
-      <p class="text-lg md:text-xl text-slate-300 font-medium max-w-2xl mx-auto mt-4 drop-shadow">
-        Your one-stop digital portal for faculty directory, complaints, transport, and more.
-      </p>
-    </div>
-  </div>
-
-  <!-- Quick Access Cards (Floating over the image) -->
-  <div class="max-w-7xl mx-auto px-4 -mt-20 relative z-10 w-full mb-16 flex-grow">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       
-      <!-- 1. Faculty Directory Card (LINK UPDATED HERE) -->
-      <a href="faculty-directory.html" class="hover-card bg-white rounded-2xl p-6 border border-slate-100 shadow-lg group flex flex-col items-center text-center cursor-pointer">
-        <div class="bg-indigo-50 p-4 rounded-full mb-4 group-hover:bg-indigo-600 group-hover:text-white transition-colors text-indigo-600">
-          <i data-lucide="users" class="w-8 h-8"></i>
-        </div>
-        <h3 class="text-lg font-bold text-slate-800 mb-2">Faculty Directory</h3>
-        <p class="text-sm text-slate-500">Check faculty details, cabins, and contact info.</p>
-      </a>
+      <!-- College Name -->
+      <h1 class="text-5xl md:text-7xl font-black tracking-tight drop-shadow-2xl leading-tight">
+        Himachal Institute of <br>
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 to-emerald-300">Engineering & Technology</span>
+      </h1>
+      
+      <!-- Subtitle -->
+      <p class="text-lg md:text-xl text-slate-200 font-medium max-w-2xl mx-auto drop-shadow-md">
+        Your unified digital ecosystem for seamless campus management, communication, and connectivity.
+      </p>
 
-      <!-- 2. Smart Complaints Card -->
-      <a href="#" class="hover-card bg-white rounded-2xl p-6 border border-slate-100 shadow-lg group flex flex-col items-center text-center cursor-pointer">
-        <div class="bg-emerald-50 p-4 rounded-full mb-4 group-hover:bg-emerald-600 group-hover:text-white transition-colors text-emerald-600">
-          <i data-lucide="message-square-warning" class="w-8 h-8"></i>
-        </div>
-        <h3 class="text-lg font-bold text-slate-800 mb-2">Lodge Complaint</h3>
-        <p class="text-sm text-slate-500">Report issues related to IT, infrastructure, or campus.</p>
-      </a>
-
-      <!-- 3. Transport Card -->
-      <a href="#" class="hover-card bg-white rounded-2xl p-6 border border-slate-100 shadow-lg group flex flex-col items-center text-center cursor-pointer">
-        <div class="bg-amber-50 p-4 rounded-full mb-4 group-hover:bg-amber-500 group-hover:text-white transition-colors text-amber-500">
-          <i data-lucide="bus" class="w-8 h-8"></i>
-        </div>
-        <h3 class="text-lg font-bold text-slate-800 mb-2">Transport Info</h3>
-        <p class="text-sm text-slate-500">Check bus routes, timings, and driver details.</p>
-      </a>
-
-      <!-- 4. Lost & Found Card -->
-      <a href="#" class="hover-card bg-white rounded-2xl p-6 border border-slate-100 shadow-lg group flex flex-col items-center text-center cursor-pointer">
-        <div class="bg-blue-50 p-4 rounded-full mb-4 group-hover:bg-blue-600 group-hover:text-white transition-colors text-blue-600">
-          <i data-lucide="search" class="w-8 h-8"></i>
-        </div>
-        <h3 class="text-lg font-bold text-slate-800 mb-2">Lost & Found</h3>
-        <p class="text-sm text-slate-500">Report missing items or check found belongings.</p>
-      </a>
-
+      <!-- Quick Action Buttons -->
+      <div class="flex flex-wrap justify-center gap-4 pt-6">
+        <a href="faculty-directory.html" class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3 rounded-full font-bold shadow-lg transition flex items-center gap-2">
+          <i data-lucide="users" class="w-5 h-5"></i> View Faculty Directory
+        </a>
+      </div>
     </div>
   </div>
 
   <!-- Footer -->
-  <footer class="bg-slate-900 text-slate-400 py-6 text-center text-sm border-t border-slate-800 mt-auto">
+  <footer class="bg-slate-900/95 backdrop-blur-md text-slate-400 py-4 text-center text-xs border-t border-slate-800 z-10 relative">
     <p>&copy; 2026 HIETFINDIT Smart Campus Portal. Designed for Students & Faculty.</p>
   </footer>
 
