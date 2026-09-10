@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HIETFINDIT - Smart Campus Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons for beautiful icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-900 text-slate-100 min-h-screen font-sans">
+
+  <!-- Navbar -->
+  <nav class="border-b border-slate-800 bg-slate-950/80 backdrop-blur sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="bg-indigo-600 p-2 rounded-xl text-white font-black text-xl">HF</div>
+        <span class="text-xl font-bold tracking-tight">HIET<span class="text-indigo-400">FINDIT</span></span>
+      </div>
+
+      <div class="flex items-center gap-4">
+        <div class="text-right hidden sm:block">
+          <p id="userNameDisplay" class="text-sm font-bold text-white">Loading...</p>
+          <p id="userRoleDisplay" class="text-xs text-indigo-400 font-semibold uppercase">Role</p>
+        </div>
+        <button id="logoutBtn" class="bg-red-500/10 hover:bg-red-500/20 text-red-500 p-2 rounded-lg transition" title="Logout">
+          <i data-lucide="log-out" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="max-w-7xl mx-auto px-4 py-8">
+    <div class="mb-8">
+      <h1 class="text-3xl font-extrabold text-white">Welcome to Smart Campus Hub</h1>
+      <p class="text-slate-400 mt-2">Access all HIET departments, facilities, and smart services from one place.</p>
+    </div>
+
+    <!-- Features Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      
+      <!-- Feature 1: Navigation -->
+      <a href="#" class="group block p-6 rounded-2xl bg-slate-800 border border-slate-700 hover:border-indigo-500 transition shadow-lg">
+        <div class="w-12 h-12 rounded-lg bg-indigo-500/20 text-indigo-400 flex items-center justify-center mb-4 group-hover:scale-110 transition">
+          <i data-lucide="map" class="w-6 h-6"></i>
+        </div>
+        <h3 class="font-bold text-xl mb-1 text-white">Smart Navigation</h3>
+        <p class="text-sm text-slate-400">Interactive campus map for labs, departments, and offices.</p>
+      </a>
+
+      <!-- Feature 2: Complaints -->
+      <a href="#" class="group block p-6 rounded-2xl bg-slate-800 border border-slate-700 hover:border-emerald-500 transition shadow-lg">
+        <div class="w-12 h-12 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-4 group-hover:scale-110 transition">
+          <i data-lucide="message-square-warning" class="w-6 h-6"></i>
+        </div>
+        <h3 class="font-bold text-xl mb-1 text-white">Smart Complaints</h3>
+        <p class="text-sm text-slate-400">Raise and track maintenance or department issues instantly.</p>
+      </a>
+
+      <!-- Feature 3: Bus Tracking -->
+      <a href="#" class="group block p-6 rounded-2xl bg-slate-800 border border-slate-700 hover:border-blue-500 transition shadow-lg">
+        <div class="w-12 h-12 rounded-lg bg-blue-500/20 text-blue-400 flex items-center justify-center mb-4 group-hover:scale-110 transition">
+          <i data-lucide="bus" class="w-6 h-6"></i>
+        </div>
+        <h3 class="font-bold text-xl mb-1 text-white">Live Bus Tracking</h3>
+        <p class="text-sm text-slate-400">Check live GPS location and schedule of college buses.</p>
+      </a>
+
+      <!-- Feature 4: Lost & Found -->
+      <a href="#" class="group block p-6 rounded-2xl bg-slate-800 border border-slate-700 hover:border-amber-500 transition shadow-lg">
+        <div class="w-12 h-12 rounded-lg bg-amber-500/20 text-amber-400 flex items-center justify-center mb-4 group-hover:scale-110 transition">
+          <i data-lucide="search" class="w-6 h-6"></i>
+        </div>
+        <h3 class="font-bold text-xl mb-1 text-white">Lost & Found</h3>
+        <p class="text-sm text-slate-400">Report missing items or claim items found on campus.</p>
+      </a>
+
+      <!-- Feature 5: Directory -->
+      <a href="#" class="group block p-6 rounded-2xl bg-slate-800 border border-slate-700 hover:border-purple-500 transition shadow-lg">
+        <div class="w-12 h-12 rounded-lg bg-purple-500/20 text-purple-400 flex items-center justify-center mb-4 group-hover:scale-110 transition">
+          <i data-lucide="users" class="w-6 h-6"></i>
+        </div>
+        <h3 class="font-bold text-xl mb-1 text-white">Faculty Directory</h3>
+        <p class="text-sm text-slate-400">Find contact info for HODs, Sick Room, Accounts, and Principal.</p>
+      </a>
+
+      <!-- Feature 6: Timetable -->
+      <a href="#" class="group block p-6 rounded-2xl bg-slate-800 border border-slate-700 hover:border-pink-500 transition shadow-lg">
+        <div class="w-12 h-12 rounded-lg bg-pink-500/20 text-pink-400 flex items-center justify-center mb-4 group-hover:scale-110 transition">
+          <i data-lucide="calendar-days" class="w-6 h-6"></i>
+        </div>
+        <h3 class="font-bold text-xl mb-1 text-white">Smart Timetable</h3>
+        <p class="text-sm text-slate-400">View real-time schedules for B.Tech, Poly, Law, BCA & BBA.</p>
+      </a>
+
+    </div>
+  </main>
+
+  <script src="js/app.js"></script>
+  <script>
+    // Initialize Icons
+    lucide.createIcons();
+  </script>
+</body>
+</html>

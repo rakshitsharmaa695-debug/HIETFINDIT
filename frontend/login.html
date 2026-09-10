@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - HIETFINDIT</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-900 text-white min-h-screen flex items-center justify-center p-4">
+
+  <div class="max-w-md w-full bg-slate-800 p-8 rounded-2xl shadow-2xl border border-slate-700">
+    <div class="text-center mb-8">
+      <h1 class="text-3xl font-black tracking-tight">HIET<span class="text-indigo-500">FINDIT</span></h1>
+      <p class="text-slate-400 text-sm mt-2">Smart Campus Portal Access</p>
+    </div>
+
+    <!-- Toggle Buttons -->
+    <div class="flex space-x-2 mb-6 bg-slate-900 p-1 rounded-lg">
+      <button id="showLoginBtn" class="flex-1 py-2 rounded-md bg-indigo-600 text-white font-semibold transition">Login</button>
+      <button id="showRegBtn" class="flex-1 py-2 rounded-md text-slate-400 hover:text-white transition">Register</button>
+    </div>
+
+    <!-- Login Form -->
+    <form id="loginForm" class="space-y-4 block">
+      <div>
+        <label class="block text-sm text-slate-400 mb-1">Email Address</label>
+        <input type="email" id="loginEmail" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500">
+      </div>
+      <div>
+        <label class="block text-sm text-slate-400 mb-1">Password</label>
+        <input type="password" id="loginPassword" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500">
+      </div>
+      <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg mt-4 transition">Sign In</button>
+    </form>
+
+    <!-- Register Form (Hidden by default) -->
+    <form id="registerForm" class="space-y-4 hidden">
+      <div>
+        <label class="block text-sm text-slate-400 mb-1">Full Name</label>
+        <input type="text" id="regName" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500">
+      </div>
+      <div>
+        <label class="block text-sm text-slate-400 mb-1">Email Address</label>
+        <input type="email" id="regEmail" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500">
+      </div>
+      <div>
+        <label class="block text-sm text-slate-400 mb-1">Password</label>
+        <input type="password" id="regPassword" required class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500">
+      </div>
+      <div>
+        <label class="block text-sm text-slate-400 mb-1">Role</label>
+        <select id="regRole" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-2.5 focus:outline-none focus:border-indigo-500 text-white">
+          <option value="student">Student</option>
+          <option value="faculty">Faculty</option>
+        </select>
+      </div>
+      <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-lg mt-4 transition">Create Account</button>
+    </form>
+
+    <div id="messageBox" class="mt-4 text-center text-sm font-semibold hidden"></div>
+  </div>
+
+  <script src="js/auth.js"></script>
+</body>
+</html>
