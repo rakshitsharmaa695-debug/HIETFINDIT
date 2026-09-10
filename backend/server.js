@@ -7,7 +7,7 @@ require('dotenv').config();
 
 const app = express();
 
-// Updated CORS configuration for your Netlify URL and local testing
+// CORS configuration for Netlify and Local testing
 app.use(cors({
   origin: ['https://hietfindit.netlify.app', 'http://localhost:5500', 'http://127.0.0.1:5500'],
   credentials: true
@@ -42,9 +42,9 @@ const initDB = async () => {
         photo TEXT
       );
     `);
-    console.log('Connected to Cloud PostgreSQL Database');[cite: 1]
+    console.log('Connected to Cloud PostgreSQL Database');
   } catch (err) {
-    console.error('DB Init Error:', err);[cite: 1]
+    console.error('DB Init Error:', err);
   }
 };
 initDB();
