@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Support & Complaints - HIETFINDIT</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+  <nav class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center shadow-sm sticky top-0 z-50">
+    <a href="dashboard.html" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Dashboard
+    </a>
+    <h1 class="text-xl font-black tracking-tight text-slate-900">Support & <span class="text-rose-600">Complaints</span></h1>
+  </nav>
+
+  <main class="flex-1 max-w-6xl mx-auto w-full p-6 lg:p-10">
+    <div class="mb-8">
+      <h2 class="text-3xl font-black text-slate-900">Lodge & Track Issues</h2>
+      <p class="text-slate-500 mt-1">Report campus issues directly to the administration.</p>
+    </div>
+    
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-1 h-fit">
+        <h3 class="text-lg font-bold text-slate-900 mb-4">New Complaint</h3>
+        <form id="complaintForm" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Issue Title</label>
+            <input type="text" id="cTitle" required class="w-full border border-slate-200 rounded-lg p-3 text-sm bg-slate-50 focus:ring-2 focus:ring-indigo-500 outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Description</label>
+            <textarea id="cDesc" required class="w-full border border-slate-200 rounded-lg p-3 text-sm bg-slate-50 h-32 focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
+          </div>
+          <button type="submit" class="w-full bg-slate-900 hover:bg-indigo-600 text-white font-bold py-3 rounded-lg transition shadow-md">Submit Report</button>
+        </form>
+      </div>
+
+      <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-2 overflow-x-auto h-fit">
+        <h3 class="text-lg font-bold text-slate-900 mb-4">Your Recent Issues</h3>
+        <table class="w-full text-left text-sm">
+          <thead class="bg-slate-50 text-slate-500">
+            <tr><th class="p-3 rounded-tl-lg">Title & Description</th><th class="p-3">Date</th><th class="p-3 rounded-tr-lg">Status</th></tr>
+          </thead>
+          <tbody id="complaintsTableBody">
+            <tr><td colspan="3" class="p-4 text-center text-slate-500">Loading reports...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    lucide.createIcons();
+    const token = localStorage.getItem('token');
+    const userStr = localStorage.getItem('user');
+    if(!token || !userStr) { window.location.href = 'login.html'; }
+    const user = JSON.parse(userStr);
+    const API_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://hietfindit-lqzt.onrender.com/api';
+
+    async function loadComplaints() {
+      const tbody = document.getElementById('complaintsTableBody');
+      try {
+        const res = await fetch(`${API_URL}/complaints`); 
+        let data = await res.json();
+        data = data.filter(c => c.student_email === user.email);
+        if(data.length === 0) return tbody.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-slate-500">No issues reported yet.</td></tr>';
+        
+        tbody.innerHTML = data.map(c => `
+          <tr class="border-b border-slate-100 hover:bg-slate-50/50">
+            <td class="p-4">
+              <p class="font-bold text-slate-900">${c.title}</p>
+              <p class="text-xs text-slate-500 mt-1 line-clamp-1">${c.description}</p>
+            </td>
+            <td class="p-4 text-xs text-slate-400">${new Date(c.created_at).toLocaleDateString()}</td>
+            <td class="p-4"><span class="px-2 py-1 text-[10px] font-bold uppercase rounded-full ${c.status === 'Resolved' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${c.status}</span></td>
+          </tr>
+        `).join('');
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-red-500">Failed to load reports.</td></tr>';
+      }
+    }
+
+    document.getElementById('complaintForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const body = { student_name: user.name, student_email: user.email, title: document.getElementById('cTitle').value, description: document.getElementById('cDesc').value };
+      try {
+        await fetch(`${API_URL}/complaints`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+        e.target.reset(); alert('Complaint submitted successfully!'); loadComplaints();
+      } catch (err) { alert('Failed to submit complaint.'); }
+    });
+
+    loadComplaints();
+  </script>
+</body>
+</html>

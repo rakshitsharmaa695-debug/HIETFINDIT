@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Timetable & Syllabus - HIETFINDIT</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+  <nav class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center shadow-sm sticky top-0 z-50">
+    <a href="index.html" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Home
+    </a>
+    <h1 class="text-xl font-black tracking-tight text-slate-900">Academic <span class="text-amber-500">Hub</span></h1>
+  </nav>
+
+  <main class="flex-1 max-w-5xl mx-auto w-full p-6 lg:p-10">
+    <div class="mb-10 text-center sm:text-left">
+      <h2 class="text-3xl font-black text-slate-900 tracking-tight">Timetable & Syllabus</h2>
+      <p class="text-slate-500 mt-1">Select your course and semester to view schedules.</p>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8 flex flex-col sm:flex-row gap-4 items-end">
+      <div class="w-full sm:w-1/2">
+        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Select Course</label>
+        <select class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none font-bold text-slate-700">
+          <option>B.Tech Computer Science</option><option>MBA</option><option>Civil Engineering</option>
+        </select>
+      </div>
+      <div class="w-full sm:w-1/3">
+        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Semester</label>
+        <select class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none font-bold text-slate-700">
+          <option>1st Semester</option><option>3rd Semester</option>
+        </select>
+      </div>
+      <button class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white px-8 py-3 rounded-xl font-bold shadow-md transition-all flex justify-center gap-2">
+        Fetch <i data-lucide="search" class="w-4 h-4"></i>
+      </button>
+    </div>
+
+    <!-- Result Display -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      
+      <!-- Timetable Card -->
+      <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 flex flex-col">
+        <h3 class="text-lg font-black text-slate-900 mb-4 flex items-center gap-2"><i data-lucide="calendar" class="w-5 h-5 text-indigo-600"></i> Class Timetable</h3>
+        <div class="w-full h-48 bg-slate-100 rounded-xl flex flex-col items-center justify-center border-2 border-dashed border-slate-300 mb-4">
+          <i data-lucide="image" class="w-8 h-8 text-slate-400 mb-2"></i>
+          <p class="text-xs font-bold text-slate-500">Timetable Image from Admin</p>
+        </div>
+        <button class="w-full bg-slate-900 text-white font-bold py-3 rounded-xl mt-auto shadow-md">View Full Screen</button>
+      </div>
+
+      <!-- Syllabus Card -->
+      <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 flex flex-col">
+        <h3 class="text-lg font-black text-slate-900 mb-4 flex items-center gap-2"><i data-lucide="file-text" class="w-5 h-5 text-emerald-600"></i> Semester Syllabus</h3>
+        <p class="text-sm text-slate-500 mb-6">Download the official syllabus document uploaded by the HOD.</p>
+        <div class="bg-emerald-50 border border-emerald-100 p-4 rounded-xl flex items-center gap-4 mb-6">
+          <div class="bg-emerald-100 p-2 rounded-lg text-emerald-600"><i data-lucide="file-pdf" class="w-6 h-6"></i></div>
+          <div>
+            <p class="font-bold text-emerald-800 text-sm">BTech_CSE_Sem1_Syllabus.pdf</p>
+            <p class="text-[10px] font-bold text-emerald-600 uppercase">2.4 MB • Official Document</p>
+          </div>
+        </div>
+        <button class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-3 rounded-xl mt-auto shadow-md flex justify-center gap-2">
+          Download PDF <i data-lucide="download" class="w-4 h-4"></i>
+        </button>
+      </div>
+
+    </div>
+  </main>
+
+  <script>lucide.createIcons();</script>
+</body>
+</html>

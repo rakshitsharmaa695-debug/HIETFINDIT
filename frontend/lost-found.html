@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lost & Found - HIETFINDIT</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+  <nav class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center shadow-sm sticky top-0 z-50">
+    <a href="dashboard.html" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Dashboard
+    </a>
+    <h1 class="text-xl font-black tracking-tight text-slate-900">Lost & <span class="text-emerald-600">Found</span></h1>
+  </nav>
+
+  <main class="flex-1 max-w-6xl mx-auto w-full p-6 lg:p-10">
+    <div class="mb-8">
+      <h2 class="text-3xl font-black text-slate-900">Deposited Items</h2>
+      <p class="text-slate-500 mt-1">Check items found across the campus.</p>
+    </div>
+
+    <div id="lostGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <p class="text-slate-500 font-bold animate-pulse">Loading items...</p>
+    </div>
+  </main>
+
+  <script>
+    lucide.createIcons();
+    if(!localStorage.getItem('token')) { window.location.href = 'login.html'; }
+    const API_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://hietfindit-lqzt.onrender.com/api';
+
+    async function loadLostFound() {
+      const grid = document.getElementById('lostGrid');
+      try {
+        const res = await fetch(`${API_URL}/lost-found`); const data = await res.json();
+        if(data.length === 0) return grid.innerHTML = '<p class="text-slate-500">No items reported.</p>';
+        grid.innerHTML = data.map(i => `
+          <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-200 hover:shadow-md transition">
+            <img src="${i.item_photo || 'https://via.placeholder.com/300x200?text=No+Photo'}" class="w-full h-44 object-cover">
+            <div class="p-5">
+              <div class="flex justify-between items-start mb-2">
+                <h3 class="font-bold text-slate-900 text-lg line-clamp-1">${i.item_name}</h3>
+                <span class="px-2.5 py-1 text-[10px] font-bold uppercase rounded-full ${i.status === 'Claimed' ? 'bg-slate-100 text-slate-500' : 'bg-emerald-100 text-emerald-700'}">${i.status}</span>
+              </div>
+              <p class="text-xs text-slate-500 line-clamp-2">${i.description}</p>
+            </div>
+          </div>
+        `).join('');
+        lucide.createIcons();
+      } catch (err) {
+        grid.innerHTML = '<p class="text-red-500">Failed to load data.</p>';
+      }
+    }
+    loadLostFound();
+  </script>
+</body>
+</html>

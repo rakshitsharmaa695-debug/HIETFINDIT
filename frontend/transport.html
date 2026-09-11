@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Transport Info - HIETFINDIT</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+  <nav class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center shadow-sm sticky top-0 z-50">
+    <a href="dashboard.html" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Dashboard
+    </a>
+    <h1 class="text-xl font-black tracking-tight text-slate-900">Campus <span class="text-amber-600">Transport</span></h1>
+  </nav>
+
+  <main class="flex-1 max-w-6xl mx-auto w-full p-6 lg:p-10">
+    <div class="mb-8">
+      <h2 class="text-3xl font-black text-slate-900">Bus Routes & Timings</h2>
+      <p class="text-slate-500 mt-1">Check daily college bus schedules and routes.</p>
+    </div>
+
+    <div id="transportGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <p class="text-slate-500 font-bold animate-pulse">Loading transport routes...</p>
+    </div>
+  </main>
+
+  <script>
+    lucide.createIcons();
+    if(!localStorage.getItem('token')) { window.location.href = 'login.html'; }
+    const API_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://hietfindit-lqzt.onrender.com/api';
+
+    async function loadTransport() {
+      const grid = document.getElementById('transportGrid');
+      try {
+        const res = await fetch(`${API_URL}/transport`); const data = await res.json();
+        if(data.length === 0) return grid.innerHTML = '<p class="text-slate-500">No transport routes available.</p>';
+        grid.innerHTML = data.map(b => `
+          <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200 flex flex-col sm:flex-row gap-5 hover:shadow-md transition">
+            <img src="${b.bus_photo || 'https://via.placeholder.com/150?text=Bus'}" class="w-full h-32 sm:w-36 object-cover rounded-xl shadow-inner border border-slate-100">
+            <div class="flex-1">
+              <span class="bg-slate-900 text-white text-[10px] font-bold px-2.5 py-1 rounded uppercase tracking-wider">${b.bus_number}</span>
+              <h3 class="font-black text-slate-900 text-lg mt-1">${b.route_name}</h3>
+              <p class="text-xs text-slate-500 mt-2 line-clamp-2"><span class="font-bold text-slate-700">Stops:</span> ${b.stops}</p>
+              <div class="mt-4 flex items-center gap-2 text-xs font-bold text-amber-600 bg-amber-50 px-3 py-1.5 rounded-lg border border-amber-100 w-fit">
+                <i data-lucide="clock" class="w-4 h-4"></i> Timing: ${b.timing}
+              </div>
+            </div>
+          </div>
+        `).join('');
+        lucide.createIcons();
+      } catch (err) {
+        grid.innerHTML = '<p class="text-red-500">Failed to load transport data.</p>';
+      }
+    }
+    loadTransport();
+  </script>
+</body>
+</html>

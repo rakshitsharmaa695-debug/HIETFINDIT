@@ -7,310 +7,200 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    .tab-content { display: none; }
-    .tab-content.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+    body { background-color: #f8fafc; }
+    .fade-in { animation: fadeIn 0.4s ease-in-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    .nav-btn.active { background-color: #e0e7ff; color: #4338ca; font-weight: bold; border-right: 4px solid #4338ca; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+<body class="text-slate-800 font-sans min-h-screen flex flex-col">
 
-  <!-- Top Navbar -->
-  <nav class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center sticky top-0 z-50 shadow-sm">
-    <div class="flex items-center gap-3">
-      <div class="bg-indigo-600 p-2 rounded-lg text-white font-black text-sm">HF</div>
-      <h1 class="text-xl font-black tracking-tight text-slate-900">HIET<span class="text-indigo-600">FINDIT</span></h1>
+  <!-- Premium Navbar -->
+  <nav class="bg-white/95 backdrop-blur-md border-b border-slate-200 px-6 py-4 flex justify-between items-center sticky top-0 z-50 shadow-sm">
+    <a href="index.html" class="flex items-center gap-2 cursor-pointer hover:opacity-80 transition">
+      <div class="bg-indigo-600 p-1.5 rounded-lg text-white font-black text-xs shadow-sm">HF</div>
+      <h1 class="text-lg font-black tracking-tight text-slate-900">HIET<span class="text-indigo-600">FINDIT</span></h1>
+    </a>
+    
+    <!-- Top Navigation Links -->
+    <div class="hidden lg:flex items-center space-x-8">
+       <a href="faculty.html" class="flex items-center gap-1.5 text-slate-600 hover:text-indigo-600 font-bold text-sm transition-colors"><i data-lucide="users" class="w-4 h-4"></i> Faculty</a>
+       <a href="complaints.html" class="flex items-center gap-1.5 text-slate-600 hover:text-indigo-600 font-bold text-sm transition-colors"><i data-lucide="message-square-warning" class="w-4 h-4"></i> Complaints</a>
+       <a href="transport.html" class="flex items-center gap-1.5 text-slate-600 hover:text-indigo-600 font-bold text-sm transition-colors"><i data-lucide="bus" class="w-4 h-4"></i> Transport</a>
+       <a href="lost-found.html" class="flex items-center gap-1.5 text-slate-600 hover:text-indigo-600 font-bold text-sm transition-colors"><i data-lucide="search" class="w-4 h-4"></i> Lost & Found</a>
     </div>
-    <div class="flex items-center gap-6">
-      <div class="text-right hidden sm:block">
-        <p id="userNameDisplay" class="text-sm font-bold text-slate-900">Student Name</p>
-        <p class="text-xs text-indigo-600 font-bold uppercase tracking-wider">Student Dashboard</p>
-      </div>
-      <button onclick="logout()" class="bg-slate-100 hover:bg-red-50 hover:text-red-600 text-slate-700 px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2 border border-slate-200">
+
+    <div class="flex items-center gap-4">
+      <span class="hidden sm:block text-xs font-bold text-slate-400 uppercase tracking-widest border-r border-slate-200 pr-4">My Dashboard</span>
+      <button onclick="logout()" class="bg-red-50 hover:bg-red-100 text-red-600 px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2 border border-red-100">
         Logout <i data-lucide="log-out" class="w-4 h-4"></i>
       </button>
     </div>
   </nav>
 
-  <div class="flex flex-1 overflow-hidden">
+  <!-- Main Profile Area (Centered & Premium) -->
+  <main class="flex-1 max-w-4xl mx-auto w-full p-6 lg:p-10 fade-in">
     
-    <!-- Sidebar Navigation -->
-    <aside class="w-64 bg-white border-r border-slate-200 flex flex-col py-6 hidden md:flex z-10 shadow-[4px_0_24px_rgba(0,0,0,0.02)]">
-      <p class="px-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Campus Services</p>
+    <div class="mb-8 text-center sm:text-left">
+      <h2 class="text-3xl font-black text-slate-900 tracking-tight">Student Profile</h2>
+      <p class="text-slate-500 mt-1 font-medium">Manage your academic identity and personal details.</p>
+    </div>
+        
+    <!-- Profile Card with Photo Upload -->
+    <div class="bg-slate-900 rounded-[2rem] p-8 sm:p-10 text-white shadow-2xl relative overflow-hidden flex flex-col sm:flex-row items-center sm:items-start gap-8 mb-8">
       
-      <button onclick="switchTab('faculty')" id="btn-faculty" class="nav-btn active flex items-center gap-3 px-6 py-3.5 text-slate-600 hover:bg-slate-50 transition text-left text-sm">
-        <i data-lucide="users-round" class="w-5 h-5"></i> Faculty Directory
-      </button>
+      <!-- Abstract Background Element -->
+      <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-indigo-500 opacity-20 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/3 pointer-events-none"></div>
       
-      <button onclick="switchTab('transport')" id="btn-transport" class="nav-btn flex items-center gap-3 px-6 py-3.5 text-slate-600 hover:bg-slate-50 transition text-left text-sm">
-        <i data-lucide="bus" class="w-5 h-5"></i> Transport Info
-      </button>
-
-      <button onclick="switchTab('lostfound')" id="btn-lostfound" class="nav-btn flex items-center gap-3 px-6 py-3.5 text-slate-600 hover:bg-slate-50 transition text-left text-sm">
-        <i data-lucide="box" class="w-5 h-5"></i> Lost & Found
-      </button>
-      
-      <button onclick="switchTab('complaints')" id="btn-complaints" class="nav-btn flex items-center gap-3 px-6 py-3.5 text-slate-600 hover:bg-slate-50 transition text-left text-sm">
-        <i data-lucide="message-square-warning" class="w-5 h-5"></i> Support & Complaints
-      </button>
-    </aside>
-
-    <!-- Main Content Area -->
-    <main class="flex-1 p-6 lg:p-10 overflow-y-auto w-full">
-      
-      <!-- ================= 1. FACULTY TAB ================= -->
-      <div id="tab-faculty" class="tab-content active max-w-6xl mx-auto">
-        <div class="mb-8">
-          <h2 class="text-3xl font-black text-slate-900">Faculty Directory</h2>
-          <p class="text-slate-500 mt-1">Find your professors and their cabin details.</p>
+      <!-- Interactive Photo Upload -->
+      <div class="relative group cursor-pointer z-10 shrink-0" onclick="document.getElementById('photoInput').click()">
+        <div class="w-32 h-32 bg-slate-800 rounded-full flex items-center justify-center border-4 border-slate-700 shadow-xl overflow-hidden transition-all group-hover:border-indigo-500">
+          <img id="profileImage" src="" class="w-full h-full object-cover hidden" alt="Profile Photo">
+          <i id="defaultAvatar" data-lucide="user" class="w-12 h-12 text-slate-400"></i>
         </div>
-        <div id="facultyGrid" class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6">
-          <!-- Data will load here -->
+        <!-- Hover Overlay -->
+        <div class="absolute inset-0 bg-slate-900/60 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
+          <i data-lucide="camera" class="w-8 h-8 text-white"></i>
+        </div>
+        <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-indigo-600 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity shadow-md">Upload</div>
+      </div>
+      <input type="file" id="photoInput" class="hidden" accept="image/*">
+
+      <div class="text-center sm:text-left z-10 mt-2">
+        <h3 id="profileName" class="text-4xl font-black tracking-tight mb-2 text-white">Loading...</h3>
+        <p id="profileEmail" class="text-slate-300 font-medium mb-4 flex items-center justify-center sm:justify-start gap-2">
+          <i data-lucide="mail" class="w-4 h-4 text-indigo-400"></i> loading...
+        </p>
+        <span class="inline-flex items-center gap-1.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest shadow-inner">
+          <i data-lucide="shield-check" class="w-4 h-4"></i> Officially Verified
+        </span>
+      </div>
+    </div>
+
+    <!-- Academic Details Form -->
+    <div class="bg-white border border-slate-200 rounded-3xl shadow-sm overflow-hidden">
+      <div class="border-b border-slate-100 bg-slate-50/80 px-8 py-6 flex justify-between items-center">
+        <div>
+          <h4 class="text-xl font-bold text-slate-900">Academic Records</h4>
+          <p class="text-sm text-slate-500 mt-1">Keep your college information up to date for official services.</p>
+        </div>
+        <div class="bg-indigo-50 p-3 rounded-2xl hidden sm:block">
+          <i data-lucide="graduation-cap" class="w-6 h-6 text-indigo-600"></i>
         </div>
       </div>
-
-      <!-- ================= 2. TRANSPORT TAB ================= -->
-      <div id="tab-transport" class="tab-content max-w-6xl mx-auto">
-        <div class="mb-8">
-          <h2 class="text-3xl font-black text-slate-900">Campus Transport</h2>
-          <p class="text-slate-500 mt-1">Bus routes, timings, and driver details.</p>
-        </div>
-        <div id="transportGrid" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <!-- Data will load here -->
-        </div>
-      </div>
-
-      <!-- ================= 3. LOST & FOUND TAB ================= -->
-      <div id="tab-lostfound" class="tab-content max-w-6xl mx-auto">
-        <div class="mb-8">
-          <h2 class="text-3xl font-black text-slate-900">Lost & Found</h2>
-          <p class="text-slate-500 mt-1">Check if your lost items have been found and deposited at the admin desk.</p>
-        </div>
-        <div id="lostGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          <!-- Data will load here -->
-        </div>
-      </div>
-
-      <!-- ================= 4. COMPLAINTS TAB ================= -->
-      <div id="tab-complaints" class="tab-content max-w-6xl mx-auto">
-        <div class="mb-8">
-          <h2 class="text-3xl font-black text-slate-900">Support & Complaints</h2>
-          <p class="text-slate-500 mt-1">Report campus issues directly to the administration.</p>
+      
+      <form id="profileForm" class="p-8">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-6 mb-8">
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Roll Number / ID</label>
+            <input type="text" id="stuRoll" placeholder="e.g. HIET2024-001" class="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-4 text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all hover:bg-white hover:border-slate-300 shadow-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Course & Branch</label>
+            <input type="text" id="stuBranch" placeholder="e.g. B.Tech Computer Science" class="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-4 text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all hover:bg-white hover:border-slate-300 shadow-sm">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Current Semester</label>
+            <select id="stuSem" class="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-4 text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all hover:bg-white hover:border-slate-300 shadow-sm">
+              <option value="">Select Semester</option>
+              <option value="1">1st Semester</option><option value="2">2nd Semester</option>
+              <option value="3">3rd Semester</option><option value="4">4th Semester</option>
+              <option value="5">5th Semester</option><option value="6">6th Semester</option>
+              <option value="7">7th Semester</option><option value="8">8th Semester</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Phone Number</label>
+            <input type="tel" id="stuPhone" placeholder="+91 XXXXX XXXXX" class="w-full bg-slate-50 border border-slate-200 text-slate-900 rounded-xl p-4 text-sm font-bold focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none transition-all hover:bg-white hover:border-slate-300 shadow-sm">
+          </div>
         </div>
         
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <!-- Form -->
-          <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-1 h-fit">
-            <h3 class="text-lg font-bold text-slate-900 mb-4">Lodge a New Issue</h3>
-            <form id="complaintForm" class="space-y-4">
-              <div>
-                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Issue Title</label>
-                <input type="text" id="cTitle" placeholder="e.g. Wi-Fi not working in Lab 3" required class="w-full border border-slate-200 rounded-lg p-3 text-sm bg-slate-50 focus:ring-2 focus:ring-indigo-500 outline-none">
-              </div>
-              <div>
-                <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Description</label>
-                <textarea id="cDesc" placeholder="Explain the issue in detail..." required class="w-full border border-slate-200 rounded-lg p-3 text-sm bg-slate-50 h-32 focus:ring-2 focus:ring-indigo-500 outline-none"></textarea>
-              </div>
-              <button id="cSubmitBtn" type="submit" class="w-full bg-slate-900 text-white font-bold py-3 rounded-lg hover:bg-indigo-600 transition shadow-lg">Submit Report</button>
-            </form>
+        <div class="flex items-center justify-between border-t border-slate-100 pt-6">
+          <div id="saveMsg" class="opacity-0 transition-opacity duration-300 flex items-center gap-2 text-sm font-bold text-emerald-600 bg-emerald-50 px-4 py-2 rounded-lg border border-emerald-100">
+            <i data-lucide="check-circle-2" class="w-5 h-5"></i> Profile Saved!
           </div>
-
-          <!-- History -->
-          <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-2 overflow-x-auto">
-            <h3 class="text-lg font-bold text-slate-900 mb-4">Your Recent Issues</h3>
-            <table class="w-full text-left text-sm">
-              <thead class="bg-slate-50 text-slate-500">
-                <tr><th class="p-3 rounded-tl-lg">Title & Description</th><th class="p-3">Reported By</th><th class="p-3">Date</th><th class="p-3 rounded-tr-lg">Status</th></tr>
-              </thead>
-              <tbody id="complaintsTableBody">
-                <!-- Data will load here -->
-              </tbody>
-            </table>
-          </div>
+          <button type="submit" class="bg-indigo-600 hover:bg-indigo-700 text-white px-8 py-3.5 rounded-xl text-sm font-bold shadow-lg shadow-indigo-200 transition-all flex items-center gap-2 transform hover:-translate-y-0.5">
+            Save Details <i data-lucide="save" class="w-4 h-4"></i>
+          </button>
         </div>
-      </div>
+      </form>
+    </div>
 
-    </main>
-  </div>
+  </main>
 
   <script>
     lucide.createIcons();
-    // Auto-detect environment for API
-    const API_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://hietfindit-lqzt.onrender.com/api';
     
-    // Auth Check: If no token or user data, redirect to login
+    // Auth Check
     const token = localStorage.getItem('token');
     const userStr = localStorage.getItem('user');
-    if(!token || !userStr) {
-      window.location.href = 'login.html';
-    }
+    if(!token || !userStr) { window.location.href = 'login.html'; }
+    
+    // 1. Load Main User Data (From DB Login)
     const user = JSON.parse(userStr);
-    document.getElementById('userNameDisplay').textContent = user.name;
+    document.getElementById('profileName').textContent = user.name;
+    document.getElementById('profileEmail').innerHTML = `<i data-lucide="mail" class="w-4 h-4 text-indigo-400"></i> ${user.email}`;
+    lucide.createIcons();
 
-    function logout() {
-      localStorage.clear();
-      window.location.href = 'login.html';
+    // 2. Load Extra Academic Data & Photo
+    const savedProfile = JSON.parse(localStorage.getItem('hiet_academic_profile')) || {};
+    if(savedProfile.roll) document.getElementById('stuRoll').value = savedProfile.roll;
+    if(savedProfile.branch) document.getElementById('stuBranch').value = savedProfile.branch;
+    if(savedProfile.sem) document.getElementById('stuSem').value = savedProfile.sem;
+    if(savedProfile.phone) document.getElementById('stuPhone').value = savedProfile.phone;
+    
+    // Load saved photo if exists
+    if(savedProfile.photo) {
+      document.getElementById('profileImage').src = savedProfile.photo;
+      document.getElementById('profileImage').classList.remove('hidden');
+      document.getElementById('defaultAvatar').classList.add('hidden');
     }
 
-    // Tab Logic (Auto-select from URL Hash)
-    function switchTab(tabName) {
-      // Hide all tabs
-      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-      
-      // Show selected tab
-      const selectedTab = document.getElementById(`tab-${tabName}`);
-      const selectedBtn = document.getElementById(`btn-${tabName}`);
-      
-      if(selectedTab && selectedBtn) {
-        selectedTab.classList.add('active');
-        selectedBtn.classList.add('active');
-        
-        // Load respective data
-        if(tabName === 'faculty') loadFaculty();
-        if(tabName === 'transport') loadTransport();
-        if(tabName === 'lostfound') loadLostFound();
-        if(tabName === 'complaints') loadComplaints();
-      }
-    }
-
-    // --- 1. Load Faculty ---
-    async function loadFaculty() {
-      const grid = document.getElementById('facultyGrid');
-      try {
-        const res = await fetch(`${API_URL}/faculty`); const data = await res.json();
-        if(data.length === 0) return grid.innerHTML = '<p class="text-slate-500">No faculty records found.</p>';
-        grid.innerHTML = data.map(f => `
-          <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex items-center gap-4 hover:shadow-md transition">
-            <img src="${f.photo || 'https://via.placeholder.com/80'}" class="w-16 h-16 rounded-full object-cover border-2 border-indigo-100">
-            <div>
-              <h3 class="font-bold text-slate-900 text-lg">${f.name}</h3>
-              <p class="text-xs font-bold text-indigo-600">${f.designation} • ${f.department}</p>
-              <p class="text-xs text-slate-500 mt-1 flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> ${f.cabin || 'Cabin N/A'}</p>
-            </div>
-          </div>
-        `).join('');
-        lucide.createIcons();
-      } catch (err) {}
-    }
-
-    // --- 2. Load Transport ---
-    async function loadTransport() {
-      const grid = document.getElementById('transportGrid');
-      try {
-        const res = await fetch(`${API_URL}/transport`); const data = await res.json();
-        if(data.length === 0) return grid.innerHTML = '<p class="text-slate-500">No transport routes available.</p>';
-        grid.innerHTML = data.map(b => `
-          <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-100 flex flex-col sm:flex-row gap-5 hover:shadow-md transition">
-            <div class="relative min-w-[120px]">
-              <img src="${b.bus_photo || 'https://via.placeholder.com/150?text=Bus'}" class="w-full h-24 sm:w-32 sm:h-32 object-cover rounded-xl shadow-inner">
-              <img src="${b.driver_photo || 'https://via.placeholder.com/50?text=Driver'}" class="w-10 h-10 object-cover rounded-full absolute -bottom-2 -right-2 border-4 border-white shadow-md">
-            </div>
-            <div class="flex-1">
-              <div class="flex justify-between items-start">
-                <div>
-                  <span class="bg-slate-900 text-white text-[10px] font-bold px-2 py-1 rounded uppercase tracking-wider">${b.bus_number}</span>
-                  <h3 class="font-black text-slate-900 text-lg mt-1">${b.route_name}</h3>
-                </div>
-              </div>
-              <p class="text-sm text-slate-500 mt-2 line-clamp-2"><span class="font-bold">Stops:</span> ${b.stops}</p>
-              <div class="mt-3 flex items-center gap-4 text-xs font-bold text-slate-600">
-                <span class="flex items-center gap-1 text-indigo-600"><i data-lucide="clock" class="w-4 h-4"></i> ${b.timing}</span>
-                <span class="flex items-center gap-1"><i data-lucide="user" class="w-4 h-4"></i> ${b.driver_name || 'Driver Details Pending'}</span>
-              </div>
-            </div>
-          </div>
-        `).join('');
-        lucide.createIcons();
-      } catch (err) {}
-    }
-
-    // --- 3. Load Lost & Found ---
-    async function loadLostFound() {
-      const grid = document.getElementById('lostGrid');
-      try {
-        const res = await fetch(`${API_URL}/lost-found`); const data = await res.json();
-        if(data.length === 0) return grid.innerHTML = '<p class="text-slate-500">No lost items reported currently.</p>';
-        grid.innerHTML = data.map(i => `
-          <div class="bg-white rounded-2xl overflow-hidden shadow-sm border border-slate-100 hover:shadow-md transition">
-            <img src="${i.item_photo || 'https://via.placeholder.com/300x200?text=No+Photo'}" class="w-full h-40 object-cover">
-            <div class="p-5">
-              <div class="flex justify-between items-start mb-2">
-                <h3 class="font-bold text-slate-900 text-lg line-clamp-1">${i.item_name}</h3>
-                <span class="px-2 py-1 text-[10px] font-bold rounded-full ${i.status === 'Claimed' ? 'bg-slate-100 text-slate-500' : 'bg-emerald-100 text-emerald-700'}">${i.status}</span>
-              </div>
-              <p class="text-xs text-slate-500 line-clamp-2 mb-3">${i.description}</p>
-              <div class="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wide border-t pt-3">
-                <span class="flex items-center gap-1"><i data-lucide="map-pin" class="w-3 h-3"></i> ${i.location}</span>
-                <span>${new Date(i.date_reported).toLocaleDateString()}</span>
-              </div>
-            </div>
-          </div>
-        `).join('');
-        lucide.createIcons();
-      } catch (err) {}
-    }
-
-    // --- 4. Complaints Logic (FILTERED FOR LOGGED-IN STUDENT) ---
-    async function loadComplaints() {
-      const tbody = document.getElementById('complaintsTableBody');
-      try {
-        const res = await fetch(`${API_URL}/complaints`); 
-        let data = await res.json();
-        
-        // PRIVACY FIX: Only show complaints that match the logged-in student's email
-        data = data.filter(c => c.student_email === user.email);
-
-        if(data.length === 0) return tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-slate-500">You have not reported any issues yet.</td></tr>';
-        
-        tbody.innerHTML = data.map(c => `
-          <tr class="border-b border-slate-100 hover:bg-slate-50/50">
-            <td class="p-4">
-              <p class="font-bold text-slate-900">${c.title}</p>
-              <p class="text-xs text-slate-500 mt-1 line-clamp-1">${c.description}</p>
-            </td>
-            <td class="p-4 text-xs font-semibold text-slate-600">You</td>
-            <td class="p-4 text-xs text-slate-400">${new Date(c.created_at).toLocaleDateString()}</td>
-            <td class="p-4">
-              <span class="px-2 py-1 text-[10px] font-bold uppercase rounded-full ${c.status === 'Resolved' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}">${c.status}</span>
-            </td>
-          </tr>
-        `).join('');
-      } catch (err) {}
-    }
-
-    document.getElementById('complaintForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const btn = document.getElementById('cSubmitBtn'); btn.textContent = 'Submitting...'; btn.disabled = true;
-      
-      const body = {
-        student_name: user.name,
-        student_email: user.email,
-        title: document.getElementById('cTitle').value,
-        description: document.getElementById('cDesc').value
-      };
-
-      try {
-        await fetch(`${API_URL}/complaints`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-        e.target.reset(); 
-        alert('Complaint submitted successfully!');
-        loadComplaints();
-      } catch (err) {
-        alert('Failed to submit complaint.');
-      } finally {
-        btn.textContent = 'Submit Report'; btn.disabled = false;
+    // 3. Handle Photo Upload Logic (Converts image to Base64 and saves it)
+    document.getElementById('photoInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if(file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+          const base64Photo = event.target.result;
+          
+          // Update UI
+          document.getElementById('profileImage').src = base64Photo;
+          document.getElementById('profileImage').classList.remove('hidden');
+          document.getElementById('defaultAvatar').classList.add('hidden');
+          
+          // Save to LocalStorage immediately
+          const tempProfile = JSON.parse(localStorage.getItem('hiet_academic_profile')) || {};
+          tempProfile.photo = base64Photo;
+          localStorage.setItem('hiet_academic_profile', JSON.stringify(tempProfile));
+        };
+        reader.readAsDataURL(file);
       }
     });
 
-    // Determine which tab to show on load based on URL hash
-    window.onload = () => {
-      const hash = window.location.hash.replace('#', '');
-      if (['faculty', 'transport', 'lostfound', 'complaints'].includes(hash)) {
-        switchTab(hash);
-      } else {
-        switchTab('faculty'); // Default fallback tab
-      }
-    };
+    // 4. Handle Form Submit (Save Data locally)
+    document.getElementById('profileForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const currentProfile = JSON.parse(localStorage.getItem('hiet_academic_profile')) || {};
+      currentProfile.roll = document.getElementById('stuRoll').value;
+      currentProfile.branch = document.getElementById('stuBranch').value;
+      currentProfile.sem = document.getElementById('stuSem').value;
+      currentProfile.phone = document.getElementById('stuPhone').value;
+      
+      localStorage.setItem('hiet_academic_profile', JSON.stringify(currentProfile));
+      
+      // Show Success Message with animation
+      const msg = document.getElementById('saveMsg');
+      msg.classList.remove('opacity-0');
+      setTimeout(() => { msg.classList.add('opacity-0'); }, 3000);
+    });
+
+    // 5. Logout Function
+    function logout() { 
+      localStorage.removeItem('token'); 
+      localStorage.removeItem('user'); 
+      window.location.href = 'login.html'; 
+    }
   </script>
 </body>
 </html>

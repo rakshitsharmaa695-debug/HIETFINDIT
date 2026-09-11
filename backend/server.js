@@ -91,15 +91,39 @@ const initDB = async () => {
 
       -- ADD NEW COLUMN SAFELY FOR LOST & FOUND (Item Photo)
       ALTER TABLE lost_found ADD COLUMN IF NOT EXISTS item_photo TEXT;
+
+      -- ==========================================
+      -- NAYI TABLES (Added for Courses & Timetable)
+      -- ==========================================
+      
+      -- 4. Courses Table (Admin adds new courses)
+      CREATE TABLE IF NOT EXISTS courses (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255),
+        duration VARCHAR(100),
+        seats INT,
+        eligibility VARCHAR(255),
+        description TEXT,
+        image TEXT
+      );
+
+      -- 5. Academics Table (Timetable & Syllabus)
+      CREATE TABLE IF NOT EXISTS academics (
+        id SERIAL PRIMARY KEY,
+        course VARCHAR(255),
+        semester VARCHAR(100),
+        timetable_img TEXT,
+        syllabus_link TEXT
+      );
     `);
-    console.log('Connected to Cloud PostgreSQL Database & All 5 Tables Verified');
+    console.log('Connected to Cloud PostgreSQL Database & All 7 Tables Verified 🚀');
   } catch (err) {
     console.error('DB Init Error:', err);
   }
 };
 initDB();
 
-// --- 1. AUTHENTICATION ROUTES ---
+// --- 1. AUTHENTICATION ROUTES (Unchanged & Working) ---
 app.post('/api/auth/register', async (req, res) => {
   const { name, email, password, role } = req.body;
   try {
@@ -199,7 +223,7 @@ app.put('/api/complaints/:id', async (req, res) => {
   }
 });
 
-// --- 4. TRANSPORT ROUTES (UPDATED) ---
+// --- 4. TRANSPORT ROUTES ---
 app.post('/api/transport', async (req, res) => {
   const { bus_number, route_name, stops, timing, rc_number, driver_name, bus_photo, driver_photo } = req.body;
   try {
@@ -232,7 +256,7 @@ app.delete('/api/transport/:id', async (req, res) => {
   }
 });
 
-// --- 5. LOST & FOUND ROUTES (UPDATED) ---
+// --- 5. LOST & FOUND ROUTES ---
 app.post('/api/lost-found', async (req, res) => {
   const { item_name, description, location, item_photo } = req.body;
   try {
@@ -265,7 +289,79 @@ app.put('/api/lost-found/:id', async (req, res) => {
   }
 });
 
-app.get('/', (req, res) => res.send('HIETFINDIT Extended Server is Running!'));
+
+// ==========================================
+// --- 6. COURSES ROUTES (NEW 🔥) ---
+// ==========================================
+app.post('/api/courses', async (req, res) => {
+  const { name, duration, seats, eligibility, description, image } = req.body;
+  try {
+    const newCourse = await pool.query(
+      'INSERT INTO courses (name, duration, seats, eligibility, description, image) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+      [name, duration, seats, eligibility, description, image]
+    );
+    res.status(201).json(newCourse.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/courses', async (req, res) => {
+  try {
+    const allCourses = await pool.query('SELECT * FROM courses ORDER BY id DESC');
+    res.json(allCourses.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/courses/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await pool.query('DELETE FROM courses WHERE id = $1', [id]);
+    res.json({ message: 'Course deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+
+// ==========================================
+// --- 7. ACADEMICS (TIMETABLE) ROUTES (NEW 🔥) ---
+// ==========================================
+app.post('/api/academics', async (req, res) => {
+  const { course, semester, timetable_img, syllabus_link } = req.body;
+  try {
+    const newRecord = await pool.query(
+      'INSERT INTO academics (course, semester, timetable_img, syllabus_link) VALUES ($1, $2, $3, $4) RETURNING *',
+      [course, semester, timetable_img, syllabus_link]
+    );
+    res.status(201).json(newRecord.rows[0]);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/api/academics', async (req, res) => {
+  try {
+    const allAcademics = await pool.query('SELECT * FROM academics ORDER BY id DESC');
+    res.json(allAcademics.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.delete('/api/academics/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await pool.query('DELETE FROM academics WHERE id = $1', [id]);
+    res.json({ message: 'Academic record deleted successfully' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+app.get('/', (req, res) => res.send('HIETFINDIT Extended Server is Running Perfectly! 🚀'));
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

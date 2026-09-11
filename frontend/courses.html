@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Explore Courses - HIETFINDIT</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+  <nav class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center shadow-sm sticky top-0 z-50">
+    <a href="index.html" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Home
+    </a>
+    <h1 class="text-xl font-black tracking-tight text-slate-900">Explore <span class="text-indigo-600">Courses</span></h1>
+  </nav>
+
+  <main class="flex-1 max-w-7xl mx-auto w-full p-6 lg:p-10">
+    <div class="mb-10 text-center sm:text-left flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div>
+        <h2 class="text-3xl font-black text-slate-900 tracking-tight">Academic Programs</h2>
+        <p class="text-slate-500 mt-1">Discover degree programs offered by the institution.</p>
+      </div>
+      <div class="bg-indigo-50 text-indigo-700 px-4 py-2 rounded-full text-xs font-bold flex items-center gap-2 border border-indigo-100 shadow-sm">
+        <i data-lucide="sparkles" class="w-4 h-4"></i> Admissions Open 2026
+      </div>
+    </div>
+
+    <!-- Courses Grid (Now dynamic and connected to Admin Panel) -->
+    <div id="coursesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <p class="text-slate-500 font-bold animate-pulse col-span-full text-center py-10">Loading latest courses...</p>
+    </div>
+  </main>
+
+  <script>
+    lucide.createIcons();
+
+    // Logic to fetch courses added by Admin
+    function loadCourses() {
+      const grid = document.getElementById('coursesGrid');
+      
+      // Admin Panel data LocalStorage mein save kar raha hai 'admin_courses' ke naam se
+      const coursesData = JSON.parse(localStorage.getItem('admin_courses')) || [];
+
+      if(coursesData.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full text-center py-16 bg-white rounded-3xl border border-dashed border-slate-300">
+            <i data-lucide="book-x" class="w-12 h-12 text-slate-300 mx-auto mb-3"></i>
+            <h3 class="text-lg font-bold text-slate-500">No Courses Available</h3>
+            <p class="text-sm text-slate-400">The administration hasn't published any courses yet.</p>
+          </div>`;
+        lucide.createIcons();
+        return;
+      }
+
+      grid.innerHTML = coursesData.map(c => `
+        <div class="bg-white rounded-3xl p-6 shadow-sm border border-slate-200 hover:shadow-xl hover:border-indigo-300 transition-all flex flex-col h-full group">
+          
+          <!-- Image from Admin -->
+          <img src="${c.img}" alt="${c.name}" class="w-full h-48 object-cover rounded-2xl mb-5 shadow-sm border border-slate-100 group-hover:scale-[1.02] transition-transform">
+          
+          <h3 class="text-xl font-black text-slate-900 mb-2">${c.name}</h3>
+          
+          <!-- About/Description from Admin -->
+          <p class="text-sm text-slate-500 mb-6 flex-grow line-clamp-3" title="${c.about}">${c.about}</p>
+          
+          <div class="space-y-3 mb-6">
+            <div class="flex items-center justify-between text-sm border-b border-slate-50 pb-2">
+              <span class="text-slate-400 font-bold">Duration</span><span class="text-slate-700 font-bold">${c.dur}</span>
+            </div>
+            <div class="flex items-center justify-between text-sm border-b border-slate-50 pb-2">
+              <span class="text-slate-400 font-bold">Eligibility</span><span class="text-slate-700 font-bold">${c.elig}</span>
+            </div>
+            <div class="flex items-center justify-between text-sm border-b border-slate-50 pb-2">
+              <span class="text-slate-400 font-bold">Seats Available</span><span class="text-emerald-600 font-bold">${c.seats}</span>
+            </div>
+          </div>
+          
+          <a href="timetable.html" class="w-full bg-slate-900 hover:bg-indigo-600 text-white font-bold py-3 rounded-xl transition shadow-md flex justify-center items-center gap-2 mt-auto">
+            View Schedule <i data-lucide="calendar" class="w-4 h-4"></i>
+          </a>
+        </div>
+      `).join('');
+      
+      lucide.createIcons();
+    }
+
+    // Run when page loads
+    loadCourses();
+  </script>
+</body>
+</html>
