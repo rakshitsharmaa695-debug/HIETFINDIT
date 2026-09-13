@@ -38,8 +38,8 @@
       <button onclick="switchAdminTab('faculty')" id="nav-faculty" class="nav-item w-full flex items-center gap-3 px-6 py-3 hover:bg-slate-800 hover:text-white transition text-left text-sm">
         <i data-lucide="users-round" class="w-5 h-5"></i> Faculty Directory
       </button>
-
-      <p class="px-6 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 mt-4">Campus Operations</p>
+      
+      <p class="px-6 text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-2 mt-4">Campus</p>
       <button onclick="switchAdminTab('transport')" id="nav-transport" class="nav-item w-full flex items-center gap-3 px-6 py-3 hover:bg-slate-800 hover:text-white transition text-left text-sm">
         <i data-lucide="bus" class="w-5 h-5"></i> Transport Fleet
       </button>
@@ -51,10 +51,11 @@
       </button>
     </nav>
 
+    <!-- SECURE LOGOUT BUTTON -->
     <div class="p-6 border-t border-slate-800">
-      <a href="login.html" class="w-full bg-slate-800 hover:bg-red-500 hover:text-white text-slate-300 px-4 py-3 rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2">
+      <button onclick="adminLogout()" class="w-full bg-slate-800 hover:bg-red-500 hover:text-white text-slate-300 px-4 py-3 rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2 shadow-md">
         Logout Admin <i data-lucide="log-out" class="w-4 h-4"></i>
-      </a>
+      </button>
     </div>
   </aside>
 
@@ -66,139 +67,137 @@
         <h2 id="sectionTitle" class="text-3xl font-black text-slate-900">Manage Courses</h2>
         <p id="sectionDesc" class="text-slate-500 mt-1">Publish new academic programs to the student portal.</p>
       </div>
-      <div class="bg-white px-4 py-2 rounded-xl shadow-sm border border-slate-200 flex items-center gap-3">
-        <div class="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-full flex items-center justify-center"><i data-lucide="shield-check" class="w-4 h-4"></i></div>
-        <div><p class="text-xs font-bold text-slate-900">Admin User</p><p class="text-[10px] font-bold text-slate-500 uppercase">Super Access</p></div>
-      </div>
     </header>
 
-    <!-- 1. COURSES (UPDATED: With Image, About & List View) -->
+    <!-- 1. COURSES -->
     <section id="sec-courses" class="admin-section active">
       <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <!-- Add Course Form -->
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 xl:col-span-1 h-fit">
           <h3 class="font-bold mb-4 border-b pb-2 text-indigo-600 flex items-center gap-2"><i data-lucide="plus-circle" class="w-5 h-5"></i> Add Course</h3>
           <form id="courseForm" class="space-y-4">
-            <input type="text" id="cName" placeholder="Course Name (e.g. B.Tech CSE)" required class="w-full border border-slate-200 rounded-xl p-3 bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+            <input type="text" id="cName" placeholder="Course Name (e.g. B.Tech CSE)" required class="w-full border rounded-xl p-3 bg-slate-50 text-sm outline-none">
             <div class="grid grid-cols-2 gap-3">
-              <input type="text" id="cDur" placeholder="Duration" required class="w-full border border-slate-200 rounded-xl p-3 bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-              <input type="number" id="cSeats" placeholder="Total Seats" required class="w-full border border-slate-200 rounded-xl p-3 bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+              <select id="cDur" required class="w-full border rounded-xl p-3 bg-slate-50 text-sm outline-none">
+                <option value="">Duration</option><option value="1 Year">1 Year</option><option value="2 Years">2 Years</option><option value="3 Years">3 Years</option><option value="4 Years">4 Years</option>
+              </select>
+              <input type="number" id="cSeats" placeholder="Total Seats" required class="w-full border rounded-xl p-3 bg-slate-50 text-sm outline-none">
             </div>
-            <input type="text" id="cElig" placeholder="Eligibility (e.g. 10+2 PCM)" required class="w-full border border-slate-200 rounded-xl p-3 bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-            <textarea id="cAbout" placeholder="About the course..." required class="w-full border border-slate-200 rounded-xl p-3 bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-indigo-500 h-24"></textarea>
-            
+            <input type="text" id="cElig" placeholder="Eligibility (e.g. 10+2 PCM)" required class="w-full border rounded-xl p-3 bg-slate-50 text-sm outline-none">
+            <textarea id="cAbout" placeholder="About the course..." required class="w-full border rounded-xl p-3 bg-slate-50 text-sm h-24 outline-none"></textarea>
             <div>
-              <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Course Thumbnail Image</label>
-              <input type="file" id="cImg" accept="image/*" required class="w-full border border-slate-200 rounded-xl p-2 bg-slate-50 text-sm outline-none">
+              <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Course Thumbnail</label>
+              <input type="file" id="cImg" accept="image/*" required class="w-full border rounded-xl p-2 bg-slate-50 text-sm">
             </div>
-            
-            <button type="submit" id="cSubmitBtn" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 shadow-md transition">Publish Course</button>
+            <button type="submit" id="cSubmitBtn" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-xl hover:bg-indigo-700 transition">Publish Course</button>
           </form>
         </div>
-        <!-- Courses List Table -->
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 xl:col-span-2 overflow-x-auto h-fit">
-          <h3 class="font-bold mb-4 border-b pb-2 text-slate-800">Active Courses</h3>
           <table class="w-full text-left text-sm">
-            <thead class="bg-slate-50 text-slate-600 font-semibold border-b border-slate-100">
-              <tr><th class="p-3">Thumbnail</th><th class="p-3">Course Info</th><th class="p-3">Stats</th><th class="p-3">Action</th></tr>
-            </thead>
+            <thead class="bg-slate-50 text-slate-600 font-semibold border-b"><tr><th class="p-3">Thumbnail</th><th class="p-3">Course Info</th><th class="p-3 text-right">Action</th></tr></thead>
             <tbody id="courseTable"></tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- 2. TIMETABLE & SYLLABUS (UPDATED: With List & Delete View) -->
+    <!-- 2. TIMETABLE & SYLLABUS -->
     <section id="sec-academics" class="admin-section">
       <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
-        <!-- Add Academic Record Form -->
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 xl:col-span-1 h-fit">
-          <h3 class="font-bold mb-4 border-b pb-2 text-amber-500 flex items-center gap-2"><i data-lucide="upload-cloud" class="w-5 h-5"></i> Upload Schedule</h3>
+          <h3 class="font-bold mb-4 border-b pb-2 text-amber-500">Create Schedule</h3>
           <form id="acadForm" class="space-y-4">
-            <input type="text" id="aCourse" placeholder="Course (e.g. B.Tech CSE)" required class="w-full border border-slate-200 rounded-xl p-3 bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-amber-500">
-            <select id="aSem" required class="w-full border border-slate-200 rounded-xl p-3 bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-amber-500">
-              <option value="">-- Choose Sem --</option>
-              <option>1st Semester</option><option>2nd Semester</option>
-              <option>3rd Semester</option><option>4th Semester</option>
-              <option>5th Semester</option><option>6th Semester</option>
-              <option>7th Semester</option><option>8th Semester</option>
-            </select>
-            <div>
-              <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Timetable Image</label>
-              <input type="file" id="aImg" accept="image/*" required class="w-full border border-slate-200 rounded-xl p-2 bg-slate-50 text-sm outline-none">
-            </div>
-            <input type="url" id="aLink" placeholder="Syllabus PDF Link (Drive)" required class="w-full border border-slate-200 rounded-xl p-3 bg-slate-50 text-sm outline-none focus:ring-2 focus:ring-amber-500">
-            
-            <button type="submit" id="aSubmitBtn" class="w-full bg-amber-500 text-white font-bold py-3 rounded-xl hover:bg-amber-600 shadow-md transition">Upload Record</button>
+            <select id="aCourse" required class="w-full border rounded-xl p-3 bg-slate-50 text-sm font-bold text-slate-700"><option value="">-- Select Linked Course --</option></select>
+            <select id="aSem" required class="w-full border rounded-xl p-3 bg-slate-50 text-sm"><option value="">-- Select Semester --</option></select>
+            <textarea id="aTimetable" placeholder="Mon: 9AM - Math..." required class="w-full border rounded-xl p-3 bg-slate-50 text-sm h-32 font-mono outline-none"></textarea>
+            <input type="url" id="aLink" placeholder="Syllabus PDF Link" required class="w-full border rounded-xl p-3 bg-slate-50 text-sm outline-none">
+            <button type="submit" id="aSubmitBtn" class="w-full bg-amber-500 text-white font-bold py-3 rounded-xl hover:bg-amber-600 transition">Publish Schedule</button>
           </form>
         </div>
-        <!-- Academic Records List -->
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 xl:col-span-2 overflow-x-auto h-fit">
-          <h3 class="font-bold mb-4 border-b pb-2 text-slate-800">Uploaded Timetables & Syllabus</h3>
           <table class="w-full text-left text-sm">
-            <thead class="bg-slate-50 text-slate-600 font-semibold border-b border-slate-100">
-              <tr><th class="p-3">Course / Sem</th><th class="p-3">Timetable Preview</th><th class="p-3">Syllabus Link</th><th class="p-3">Action</th></tr>
-            </thead>
+            <thead class="bg-slate-50 text-slate-600 font-semibold border-b"><tr><th class="p-3">Course / Sem</th><th class="p-3">Timetable Preview</th><th class="p-3 text-right">Action</th></tr></thead>
             <tbody id="acadTable"></tbody>
           </table>
         </div>
       </div>
     </section>
 
-    <!-- 3. FACULTY (Connected to Live DB) -->
+    <!-- 3. FACULTY (WITH REORDERING UP/DOWN) -->
     <section id="sec-faculty" class="admin-section">
-      <!-- Old faculty layout remains exact same -->
       <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 xl:col-span-1 h-fit">
           <h3 class="font-bold mb-4 border-b pb-2">Add Faculty</h3>
           <form id="fForm" class="space-y-4">
-            <input type="text" id="fName" placeholder="Name" required class="w-full border rounded-lg p-3 bg-slate-50 text-sm">
-            <input type="text" id="fDept" placeholder="Department" required class="w-full border rounded-lg p-3 bg-slate-50 text-sm">
-            <input type="text" id="fDesig" placeholder="Designation" required class="w-full border rounded-lg p-3 bg-slate-50 text-sm">
-            <input type="text" id="fCabin" placeholder="Cabin" class="w-full border rounded-lg p-3 bg-slate-50 text-sm">
-            <input type="file" id="fPhoto" accept="image/*" class="w-full border rounded-lg p-2 bg-slate-50 text-sm">
+            <input type="text" id="fName" placeholder="Name" required class="w-full border rounded-lg p-3 bg-slate-50 text-sm outline-none">
+            <select id="fDept" required class="w-full border rounded-lg p-3 bg-slate-50 text-sm font-bold text-slate-700 outline-none"><option value="">-- Select Department --</option></select>
+            <input type="text" id="fDesig" placeholder="Designation" required class="w-full border rounded-lg p-3 bg-slate-50 text-sm outline-none">
+            <input type="text" id="fCabin" placeholder="Cabin" class="w-full border rounded-lg p-3 bg-slate-50 text-sm outline-none">
+            <div>
+              <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Photo (Optional)</label>
+              <input type="file" id="fPhoto" accept="image/*" class="w-full border rounded-lg p-2 bg-slate-50 text-sm">
+            </div>
             <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-lg hover:bg-indigo-700">Add to DB</button>
           </form>
         </div>
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 xl:col-span-2 overflow-x-auto">
-          <h3 class="font-bold mb-4 border-b pb-2">Faculty List</h3>
-          <table class="w-full text-left text-sm"><tbody id="fTable"></tbody></table>
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 xl:col-span-2 overflow-x-auto h-fit">
+          <h3 class="font-bold mb-4 border-b pb-2 text-slate-800">Faculty List (Reorderable)</h3>
+          <table class="w-full text-left text-sm">
+            <thead>
+              <tr class="text-slate-500 border-b"><th class="pb-2">Name</th><th class="pb-2">Dept</th><th class="pb-2 text-right">Action</th></tr>
+            </thead>
+            <tbody id="fTable"></tbody>
+          </table>
         </div>
       </div>
     </section>
 
-    <!-- 4. TRANSPORT (Connected to Live DB) -->
+    <!-- 4. TRANSPORT (WITH EDIT & PHOTO FEATURE) -->
     <section id="sec-transport" class="admin-section">
       <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 xl:col-span-1 h-fit">
-          <h3 class="font-bold mb-4 border-b pb-2">Add Bus Route</h3>
+          <h3 class="font-bold mb-4 border-b pb-2 text-blue-600">Manage Bus Route</h3>
           <form id="tForm" class="space-y-4">
-            <input type="text" id="tBus" placeholder="Bus Number" required class="w-full border rounded-lg p-3 bg-slate-50 text-sm">
-            <input type="text" id="tRoute" placeholder="Route Name" required class="w-full border rounded-lg p-3 bg-slate-50 text-sm">
-            <input type="text" id="tStops" placeholder="Stops (Comma separated)" required class="w-full border rounded-lg p-3 bg-slate-50 text-sm">
-            <input type="text" id="tTime" placeholder="Timing" required class="w-full border rounded-lg p-3 bg-slate-50 text-sm">
-            <button type="submit" class="w-full bg-indigo-600 text-white font-bold py-3 rounded-lg">Add Route</button>
+            <input type="text" id="tBus" placeholder="Bus Number" required class="w-full border rounded-lg p-3 bg-slate-50 text-sm outline-none">
+            <input type="text" id="tRoute" placeholder="Route Name" required class="w-full border rounded-lg p-3 bg-slate-50 text-sm outline-none">
+            <input type="text" id="tStops" placeholder="Stops (Comma separated)" required class="w-full border rounded-lg p-3 bg-slate-50 text-sm outline-none">
+            <input type="text" id="tTime" placeholder="Timing" required class="w-full border rounded-lg p-3 bg-slate-50 text-sm outline-none">
+            <div>
+              <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Bus Photo (Optional)</label>
+              <input type="file" id="tPhoto" accept="image/*" class="w-full border rounded-lg p-2 bg-slate-50 text-sm">
+            </div>
+            
+            <div class="flex gap-2">
+              <button type="submit" id="tSubmitBtn" class="flex-1 bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition">Add Route</button>
+              <button type="button" id="tCancelBtn" onclick="cancelTransportEdit()" class="hidden flex-1 bg-slate-200 text-slate-700 font-bold py-3 rounded-lg hover:bg-slate-300 transition">Cancel</button>
+            </div>
           </form>
         </div>
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 xl:col-span-2 overflow-x-auto">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 xl:col-span-2 overflow-x-auto h-fit">
           <h3 class="font-bold mb-4 border-b pb-2">Fleet List</h3>
-          <table class="w-full text-left text-sm"><tbody id="tTable"></tbody></table>
+          <table class="w-full text-left text-sm">
+            <thead>
+              <tr class="text-slate-500 border-b"><th class="pb-2">Bus Info</th><th class="pb-2">Route</th><th class="pb-2 text-right">Action</th></tr>
+            </thead>
+            <tbody id="tTable"></tbody>
+          </table>
         </div>
       </div>
     </section>
 
-    <!-- 5. COMPLAINTS (Connected to Live DB) -->
+    <!-- 5. COMPLAINTS -->
     <section id="sec-complaints" class="admin-section">
       <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 overflow-x-auto max-w-5xl">
         <h3 class="font-bold mb-4 border-b pb-2 text-rose-600">Student Complaints</h3>
         <table class="w-full text-left text-sm">
-          <thead class="bg-slate-50 text-slate-500 border-b"><tr><th class="p-3">Student</th><th class="p-3">Issue</th><th class="p-3">Status</th><th class="p-3">Action</th></tr></thead>
+          <thead class="bg-slate-50 text-slate-500 border-b">
+            <tr><th class="p-3">Student</th><th class="p-3">Issue</th><th class="p-3">Status</th><th class="p-3 text-right">Action</th></tr>
+          </thead>
           <tbody id="cTable"></tbody>
         </table>
       </div>
     </section>
 
-    <!-- 6. LOST & FOUND (Connected to Live DB) -->
+    <!-- 6. LOST & FOUND -->
     <section id="sec-lostfound" class="admin-section">
       <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
         <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 xl:col-span-1 h-fit">
@@ -206,13 +205,20 @@
           <form id="lForm" class="space-y-4">
             <input type="text" id="lName" placeholder="Item Name" required class="w-full border rounded-lg p-3 bg-slate-50 text-sm">
             <input type="text" id="lLoc" placeholder="Location Found" required class="w-full border rounded-lg p-3 bg-slate-50 text-sm">
-            <textarea id="lDesc" placeholder="Description" required class="w-full border rounded-lg p-3 bg-slate-50 text-sm"></textarea>
+            <textarea id="lDesc" placeholder="Description" required class="w-full border rounded-lg p-3 bg-slate-50 text-sm h-24"></textarea>
             <button type="submit" class="w-full bg-emerald-600 text-white font-bold py-3 rounded-lg">Add Item</button>
           </form>
         </div>
-        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 xl:col-span-2 overflow-x-auto">
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 xl:col-span-2 overflow-x-auto h-fit">
           <h3 class="font-bold mb-4 border-b pb-2">Inventory</h3>
-          <table class="w-full text-left text-sm"><tbody id="lTable"></tbody></table>
+          <table class="w-full text-left text-sm">
+            <thead>
+              <tr class="bg-slate-50 text-slate-600 font-semibold border-b">
+                <th class="p-3">Item Details</th><th class="p-3">Location</th><th class="p-3 text-right">Status / Action</th>
+              </tr>
+            </thead>
+            <tbody id="lTable"></tbody>
+          </table>
         </div>
       </div>
     </section>
@@ -221,10 +227,23 @@
 
   <script>
     lucide.createIcons();
-    const API_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://hietfindit-lqzt.onrender.com/api';
     
-    // File to Base64 Converter helper
+    // Security Check
+    const token = localStorage.getItem('token');
+    const userStr = localStorage.getItem('user');
+    if (!token || !userStr || JSON.parse(userStr).role !== 'admin') {
+      window.location.href = 'index.html'; 
+    }
+
+    const API_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://hietfindit-lqzt.onrender.com/api';
     const toBase64 = f => new Promise((res, rej) => { const r = new FileReader(); r.readAsDataURL(f); r.onload = () => res(r.result); });
+
+    function adminLogout() {
+      if(confirm('Log out from Admin Panel?')) {
+        localStorage.removeItem('token'); localStorage.removeItem('user');
+        window.location.href = 'index.html'; 
+      }
+    }
 
     function switchAdminTab(tab) {
       document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
@@ -232,153 +251,291 @@
       document.getElementById(`sec-${tab}`).classList.add('active');
       document.getElementById(`nav-${tab}`).classList.add('active');
       
-      const t = {
-        'courses': ['Manage Courses', 'Add course details, images, and descriptions.'],
-        'academics': ['Timetable & Syllabus', 'Upload sem-wise class schedules and syllabus PDFs.'],
-        'faculty': ['Faculty Directory', 'Add or remove staff records.'],
+      const titles = {
+        'courses': ['Manage Courses', 'Publish new academic programs to the student portal.'],
+        'academics': ['Timetable & Syllabus', 'Upload sem-wise class schedules.'],
+        'faculty': ['Faculty Directory', 'Add and organize faculty members.'],
         'transport': ['Transport Fleet', 'Manage buses and routes.'],
         'complaints': ['Complaints Inbox', 'Resolve student issues.'],
         'lostfound': ['Lost & Found', 'Manage campus inventory.']
       };
-      document.getElementById('sectionTitle').innerText = t[tab][0];
-      document.getElementById('sectionDesc').innerText = t[tab][1];
+      document.getElementById('sectionTitle').innerText = titles[tab][0];
+      document.getElementById('sectionDesc').innerText = titles[tab][1];
     }
 
-    /* =======================================
-       1. COURSES LOGIC (Using LocalStorage)
-    ======================================== */
-    let coursesData = JSON.parse(localStorage.getItem('admin_courses')) || [];
+    // ==========================================
+    // 1. COURSES
+    // ==========================================
+    let globalCourses = [];
+    async function loadAdminCourses() {
+      try {
+        const res = await fetch(`${API_URL}/courses`); 
+        globalCourses = await res.json();
+        const aCourse = document.getElementById('aCourse'); 
+        const fDept = document.getElementById('fDept');
+        
+        aCourse.innerHTML = '<option value="">-- Select Linked Course --</option>'; 
+        fDept.innerHTML = '<option value="">-- Select Linked Department --</option>';
+        globalCourses.forEach(c => { 
+          aCourse.innerHTML += `<option value="${c.name}">${c.name}</option>`; 
+          fDept.innerHTML += `<option value="${c.name}">${c.name}</option>`; 
+        });
 
-    function renderCourses() {
-      const tbody = document.getElementById('courseTable');
-      if(coursesData.length === 0) return tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-500">No courses added yet.</td></tr>';
-      
-      tbody.innerHTML = coursesData.map(c => `
-        <tr class="border-b hover:bg-slate-50">
-          <td class="p-3"><img src="${c.img}" class="w-16 h-12 object-cover rounded-lg border border-slate-200"></td>
-          <td class="p-3">
-            <p class="font-bold text-slate-900">${c.name}</p>
-            <p class="text-xs text-slate-500 w-48 truncate" title="${c.about}">${c.about}</p>
-          </td>
-          <td class="p-3">
-            <p class="text-xs font-bold text-slate-700">${c.dur}</p>
-            <p class="text-[10px] text-emerald-600 font-bold">${c.seats} Seats | ${c.elig}</p>
-          </td>
-          <td class="p-3"><button onclick="deleteCourse('${c.id}')" class="text-red-500 bg-red-50 p-2 rounded-lg hover:bg-red-100 transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
-        </tr>
-      `).join('');
-      lucide.createIcons();
+        document.getElementById('courseTable').innerHTML = globalCourses.map(c => `
+          <tr class="border-b hover:bg-slate-50">
+            <td class="p-3"><img src="${c.image}" class="w-16 h-12 object-cover rounded-lg border"></td>
+            <td class="p-3"><p class="font-bold text-slate-900">${c.name}</p><p class="text-[10px] font-bold text-indigo-600">${c.duration} | ${c.seats} Seats</p></td>
+            <td class="p-3 text-right"><button onclick="deleteCourse(${c.id})" class="text-red-500 hover:bg-red-50 p-2 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
+          </tr>
+        `).join('');
+        lucide.createIcons();
+      } catch(e) { console.error(e); }
     }
 
     document.getElementById('courseForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const btn = document.getElementById('cSubmitBtn'); btn.textContent = 'Saving...'; btn.disabled = true;
-      const file = document.getElementById('cImg').files[0];
-      const b64 = file ? await toBase64(file) : '';
-
-      const newCourse = {
-        id: Date.now().toString(),
-        name: document.getElementById('cName').value, dur: document.getElementById('cDur').value,
-        seats: document.getElementById('cSeats').value, elig: document.getElementById('cElig').value,
-        about: document.getElementById('cAbout').value, img: b64
+      const f = document.getElementById('cImg').files[0]; 
+      const b64 = f ? await toBase64(f) : ''; 
+      const body = {
+        name: document.getElementById('cName').value, duration: document.getElementById('cDur').value,
+        seats: document.getElementById('cSeats').value, eligibility: document.getElementById('cElig').value,
+        description: document.getElementById('cAbout').value, image: b64
       };
-      
-      coursesData.push(newCourse);
-      localStorage.setItem('admin_courses', JSON.stringify(coursesData));
-      e.target.reset(); renderCourses();
-      btn.textContent = 'Publish Course'; btn.disabled = false;
+      await fetch(`${API_URL}/courses`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)}); 
+      e.target.reset(); 
+      loadAdminCourses();
     });
-
-    function deleteCourse(id) {
-      if(confirm('Delete this course?')) {
-        coursesData = coursesData.filter(c => c.id !== id);
-        localStorage.setItem('admin_courses', JSON.stringify(coursesData));
-        renderCourses();
+    
+    async function deleteCourse(id) {
+      if(confirm('Delete course?')) {
+        await fetch(`${API_URL}/courses/${id}`, {method:'DELETE'});
+        loadAdminCourses();
       }
     }
 
-    /* =======================================
-       2. ACADEMICS LOGIC (Using LocalStorage)
-    ======================================== */
-    let acadData = JSON.parse(localStorage.getItem('admin_academics')) || [];
+    // ==========================================
+    // 2. TIMETABLE
+    // ==========================================
+    async function loadAcad(){ 
+      try {
+        const r = await fetch(`${API_URL}/academics`); 
+        const data = await r.json(); 
+        document.getElementById('acadTable').innerHTML = data.map(a => `
+          <tr class="border-b hover:bg-slate-50">
+            <td class="p-3"><p class="font-bold text-slate-900">${a.course}</p><span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase">${a.semester}</span></td>
+            <td class="p-3"><p class="text-xs text-slate-500 font-mono line-clamp-2 w-48">${a.timetable_img}</p></td>
+            <td class="p-3 text-right"><button onclick="deleteAcad(${a.id})" class="text-red-500 hover:bg-red-50 p-2 rounded-lg"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
+          </tr>
+        `).join('');
+        lucide.createIcons();
+      } catch(e) {}
+    }
 
-    function renderAcad() {
-      const tbody = document.getElementById('acadTable');
-      if(acadData.length === 0) return tbody.innerHTML = '<tr><td colspan="4" class="p-6 text-center text-slate-500">No schedules uploaded.</td></tr>';
-      
-      tbody.innerHTML = acadData.map(a => `
+    document.getElementById('aCourse').addEventListener('change', function(e) { 
+      const c = globalCourses.find(x => x.name === e.target.value); 
+      const s = document.getElementById('aSem'); 
+      s.innerHTML = '<option value="">-- Select Semester --</option>'; 
+      if(c){ 
+        let max=8; if(c.duration.includes('1'))max=2; if(c.duration.includes('2'))max=4; if(c.duration.includes('3'))max=6; 
+        for(let i=1;i<=max;i++){ s.innerHTML+=`<option value="Semester ${i}">Semester ${i}</option>`; } 
+      } 
+    });
+
+    document.getElementById('acadForm').addEventListener('submit', async (e) => {
+      e.preventDefault(); 
+      const body = {
+        course: document.getElementById('aCourse').value, semester: document.getElementById('aSem').value,
+        syllabus_link: document.getElementById('aLink').value, timetable_img: document.getElementById('aTimetable').value
+      };
+      await fetch(`${API_URL}/academics`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)}); 
+      e.target.reset(); 
+      loadAcad();
+    });
+
+    async function deleteAcad(id) {
+      if(confirm('Delete schedule?')) { await fetch(`${API_URL}/academics/${id}`, {method:'DELETE'}); loadAcad(); }
+    }
+
+    // ==========================================
+    // 3. FACULTY (WITH UP/DOWN)
+    // ==========================================
+    let globalFaculty = [];
+    async function loadFac() { 
+      try {
+        const r = await fetch(`${API_URL}/faculty`); 
+        globalFaculty = await r.json(); 
+        renderFacTable();
+      } catch(e) {}
+    }
+    
+    function renderFacTable() {
+      document.getElementById('fTable').innerHTML = globalFaculty.map((f, index) => `
         <tr class="border-b hover:bg-slate-50">
-          <td class="p-3">
-            <p class="font-bold text-slate-900">${a.course}</p>
-            <span class="bg-amber-100 text-amber-700 px-2 py-0.5 rounded text-[10px] font-bold uppercase">${a.sem}</span>
+          <td class="p-2 py-3 font-bold flex items-center gap-2">
+            ${f.photo ? `<img src="${f.photo}" class="w-8 h-8 rounded-full object-cover">` : `<div class="w-8 h-8 bg-slate-200 rounded-full flex items-center justify-center text-slate-500"><i data-lucide="user" class="w-4 h-4"></i></div>`}
+            ${f.name}
           </td>
-          <td class="p-3"><img src="${a.img}" class="h-12 w-auto object-cover border border-slate-200 rounded cursor-pointer hover:scale-150 transition-transform origin-left"></td>
-          <td class="p-3"><a href="${a.link}" target="_blank" class="text-blue-600 text-xs font-bold underline flex items-center gap-1"><i data-lucide="external-link" class="w-3 h-3"></i> View PDF</a></td>
-          <td class="p-3"><button onclick="deleteAcad('${a.id}')" class="text-red-500 bg-red-50 p-2 rounded-lg hover:bg-red-100 transition"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td>
+          <td class="p-2 py-3 text-indigo-600 font-bold text-xs">${f.department}</td>
+          <td class="p-2 py-3 flex justify-end gap-1">
+            <button onclick="moveFac(${index}, -1)" class="text-slate-500 hover:bg-slate-200 p-1.5 rounded disabled:opacity-20" ${index === 0 ? 'disabled' : ''}><i data-lucide="arrow-up" class="w-4 h-4"></i></button>
+            <button onclick="moveFac(${index}, 1)" class="text-slate-500 hover:bg-slate-200 p-1.5 rounded disabled:opacity-20" ${index === globalFaculty.length - 1 ? 'disabled' : ''}><i data-lucide="arrow-down" class="w-4 h-4"></i></button>
+            <button onclick="deleteFac(${f.id})" class="text-red-500 hover:bg-red-50 p-1.5 rounded ml-2"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+          </td>
         </tr>
-      `).join('');
+      `).join(''); 
       lucide.createIcons();
     }
 
-    document.getElementById('acadForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const btn = document.getElementById('aSubmitBtn'); btn.textContent = 'Uploading...'; btn.disabled = true;
-      const file = document.getElementById('aImg').files[0];
-      const b64 = file ? await toBase64(file) : '';
+    async function moveFac(index, direction) {
+      const temp = globalFaculty[index];
+      globalFaculty[index] = globalFaculty[index + direction];
+      globalFaculty[index + direction] = temp;
+      renderFacTable(); 
+      const orderedIds = globalFaculty.map(f => f.id);
+      try {
+        await fetch(`${API_URL}/faculty/reorder`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ orderedIds }) });
+      } catch(e) {}
+    }
 
-      const newAcad = {
-        id: Date.now().toString(),
-        course: document.getElementById('aCourse').value, sem: document.getElementById('aSem').value,
-        link: document.getElementById('aLink').value, img: b64
-      };
-      
-      acadData.push(newAcad);
-      localStorage.setItem('admin_academics', JSON.stringify(acadData));
-      e.target.reset(); renderAcad();
-      btn.textContent = 'Upload Record'; btn.disabled = false;
-    });
+    async function deleteFac(id) {
+      if(confirm('Delete faculty?')) { await fetch(`${API_URL}/faculty/${id}`, {method:'DELETE'}); loadFac(); }
+    }
 
-    function deleteAcad(id) {
-      if(confirm('Delete this record?')) {
-        acadData = acadData.filter(a => a.id !== id);
-        localStorage.setItem('admin_academics', JSON.stringify(acadData));
-        renderAcad();
+    document.getElementById('fForm').onsubmit = async(e) => { 
+      e.preventDefault(); 
+      const file = document.getElementById('fPhoto').files[0]; 
+      const p = file ? await toBase64(file) : ''; 
+      const body = { name: document.getElementById('fName').value, department: document.getElementById('fDept').value, designation: document.getElementById('fDesig').value, cabin: document.getElementById('fCabin').value, photo: p };
+      await fetch(`${API_URL}/faculty`, {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body)}); 
+      e.target.reset(); loadFac(); 
+    };
+
+    // ==========================================
+    // 4. TRANSPORT (EDIT & PHOTO)
+    // ==========================================
+    let globalTransport = [];
+    let editTransportId = null; 
+
+    async function loadTrans() { 
+      try {
+        const res = await fetch(`${API_URL}/transport`); 
+        globalTransport = await res.json();
+        document.getElementById('tTable').innerHTML = globalTransport.map(t => `
+          <tr class="border-b hover:bg-slate-50">
+            <td class="p-2 py-3 flex items-center gap-3">
+              ${t.bus_photo ? `<img src="${t.bus_photo}" class="w-12 h-12 object-cover rounded shadow-sm border border-slate-200">` : `<div class="w-12 h-12 bg-slate-100 rounded border border-slate-200 flex items-center justify-center text-slate-400"><i data-lucide="bus" class="w-5 h-5"></i></div>`}
+              <span class="font-bold text-slate-900">${t.bus_number}</span>
+            </td>
+            <td class="p-2 py-3 text-xs text-slate-600"><span class="font-bold text-indigo-600 block mb-1">${t.route_name}</span>${t.timing}</td>
+            <td class="p-2 py-3">
+              <div class="flex justify-end gap-1">
+                <button onclick="editTransport(${t.id})" class="text-blue-500 hover:bg-blue-50 p-1.5 rounded"><i data-lucide="edit" class="w-4 h-4"></i></button>
+                <button onclick="deleteTransport(${t.id})" class="text-red-500 hover:bg-red-50 p-1.5 rounded"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+              </div>
+            </td>
+          </tr>
+        `).join(''); 
+        lucide.createIcons();
+      } catch(e) {}
+    }
+
+    function editTransport(id) {
+      const t = globalTransport.find(x => x.id === id);
+      if(!t) return;
+      editTransportId = id;
+      document.getElementById('tBus').value = t.bus_number;
+      document.getElementById('tRoute').value = t.route_name;
+      document.getElementById('tStops').value = t.stops;
+      document.getElementById('tTime').value = t.timing;
+      document.getElementById('tSubmitBtn').textContent = 'Update Route';
+      document.getElementById('tCancelBtn').classList.remove('hidden');
+    }
+
+    function cancelTransportEdit() {
+      editTransportId = null;
+      document.getElementById('tForm').reset();
+      document.getElementById('tSubmitBtn').textContent = 'Add Route';
+      document.getElementById('tCancelBtn').classList.add('hidden');
+    }
+
+    document.getElementById('tForm').onsubmit = async(e) => { 
+      e.preventDefault(); 
+      const file = document.getElementById('tPhoto').files[0]; 
+      const b64 = file ? await toBase64(file) : null; 
+      const body = { bus_number: document.getElementById('tBus').value, route_name: document.getElementById('tRoute').value, stops: document.getElementById('tStops').value, timing: document.getElementById('tTime').value, bus_photo: b64 };
+      if(editTransportId) {
+        await fetch(`${API_URL}/transport/${editTransportId}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+      } else {
+        await fetch(`${API_URL}/transport`, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
       }
+      cancelTransportEdit(); loadTrans(); 
+    }
+    
+    async function deleteTransport(id) {
+      if(confirm('Delete bus route?')) { await fetch(`${API_URL}/transport/${id}`, {method:'DELETE'}); loadTrans(); }
     }
 
-
-    /* =======================================
-       3. DB FETCHES (Faculty, Transport, etc)
-    ======================================== */
-    async function loadFac(){ 
-      const res=await fetch(`${API_URL}/faculty`); const data=await res.json();
-      document.getElementById('fTable').innerHTML = data.map(f=>`<tr class="border-b hover:bg-slate-50"><td class="p-2">${f.name}</td><td class="p-2 text-indigo-600">${f.department}</td><td class="p-2"><button onclick="fetch('${API_URL}/faculty/${f.id}',{method:'DELETE'}).then(loadFac)" class="text-red-500 hover:bg-red-50 p-1.5 rounded"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td></tr>`).join(''); lucide.createIcons();
-    }
-    document.getElementById('fForm').onsubmit = async(e)=>{ e.preventDefault(); const file=document.getElementById('fPhoto').files[0]; const p=file?await toBase64(file):''; await fetch(`${API_URL}/faculty`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name:document.getElementById('fName').value,department:document.getElementById('fDept').value,designation:document.getElementById('fDesig').value,cabin:document.getElementById('fCabin').value,photo:p})}); e.target.reset(); loadFac(); }
-
-    async function loadTrans(){ 
-      const res=await fetch(`${API_URL}/transport`); const data=await res.json();
-      document.getElementById('tTable').innerHTML = data.map(t=>`<tr class="border-b hover:bg-slate-50"><td class="p-2 font-bold">${t.bus_number}</td><td class="p-2 text-xs">${t.route_name}</td><td class="p-2"><button onclick="fetch('${API_URL}/transport/${t.id}',{method:'DELETE'}).then(loadTrans)" class="text-red-500 hover:bg-red-50 p-1.5 rounded"><i data-lucide="trash-2" class="w-4 h-4"></i></button></td></tr>`).join(''); lucide.createIcons();
-    }
-    document.getElementById('tForm').onsubmit = async(e)=>{ e.preventDefault(); await fetch(`${API_URL}/transport`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bus_number:document.getElementById('tBus').value,route_name:document.getElementById('tRoute').value,stops:document.getElementById('tStops').value,timing:document.getElementById('tTime').value})}); e.target.reset(); loadTrans(); }
-
+    // ==========================================
+    // 5. COMPLAINTS
+    // ==========================================
     async function loadComp(){ 
-      const res=await fetch(`${API_URL}/complaints`); const data=await res.json();
-      document.getElementById('cTable').innerHTML = data.map(c=>`<tr class="border-b hover:bg-slate-50"><td class="p-3"><p class="font-bold">${c.student_name}</p><p class="text-xs text-slate-500">${c.student_email}</p></td><td class="p-3 font-medium">${c.title}</td><td class="p-3"><span class="px-2 py-1 text-[10px] font-bold rounded-full ${c.status==='Resolved'?'bg-emerald-100 text-emerald-700':'bg-amber-100 text-amber-700'}">${c.status}</span></td><td class="p-3">${c.status==='Pending'?`<button onclick="fetch('${API_URL}/complaints/${c.id}',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'Resolved'})}).then(loadComp)" class="text-emerald-600 bg-emerald-50 px-3 py-1 rounded-lg text-xs font-bold hover:bg-emerald-100">Resolve</button>`:'<i data-lucide="check" class="w-4 h-4 text-emerald-500"></i>'}</td></tr>`).join(''); lucide.createIcons();
+      try {
+        const r = await fetch(`${API_URL}/complaints`); 
+        const data = await r.json(); 
+        document.getElementById('cTable').innerHTML = data.map(c => `
+          <tr class="border-b hover:bg-slate-50">
+            <td class="p-3"><p class="font-bold text-slate-900">${c.student_name}</p><p class="text-[10px] text-slate-500">${c.student_email}</p></td>
+            <td class="p-3"><p class="font-semibold text-sm">${c.title}</p><p class="text-xs text-slate-500 mt-1">${c.description}</p></td>
+            <td class="p-3"><span class="px-2 py-1 text-[10px] font-bold rounded-full ${c.status==='Resolved'?'bg-emerald-100 text-emerald-700':'bg-amber-100 text-amber-700'}">${c.status}</span></td>
+            <td class="p-3 text-right">${c.status==='Pending'?`<button onclick="resolveComplaint(${c.id})" class="text-emerald-600 bg-emerald-50 px-3 py-1 rounded-lg text-xs font-bold hover:bg-emerald-100">Resolve</button>`:'<i data-lucide="check-circle" class="w-5 h-5 text-emerald-500 inline"></i>'}</td>
+          </tr>
+        `).join(''); 
+        lucide.createIcons();
+      } catch(e) {}
     }
 
+    async function resolveComplaint(id) {
+      await fetch(`${API_URL}/complaints/${id}`,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({status:'Resolved'})});
+      loadComp();
+    }
+
+    // ==========================================
+    // 6. LOST & FOUND
+    // ==========================================
     async function loadLost(){ 
-      const res=await fetch(`${API_URL}/lost-found`); const data=await res.json();
-      document.getElementById('lTable').innerHTML = data.map(l=>`<tr class="border-b hover:bg-slate-50"><td class="p-3 font-bold">${l.item_name}</td><td class="p-3 text-xs">${l.location}</td><td class="p-3">${l.status==='Unclaimed'?`<button onclick="fetch('${API_URL}/lost-found/${l.id}',{method:'PUT'}).then(loadLost)" class="text-blue-600 bg-blue-50 px-3 py-1 rounded-lg text-xs font-bold hover:bg-blue-100">Mark Claimed</button>`:'<span class="text-xs font-bold text-slate-400">Claimed</span>'}</td></tr>`).join('');
+      try {
+        const r = await fetch(`${API_URL}/lost-found`); 
+        const data = await r.json(); 
+        document.getElementById('lTable').innerHTML = data.map(l => `
+          <tr class="border-b hover:bg-slate-50">
+            <td class="p-3"><p class="font-bold text-slate-900">${l.item_name}</p><p class="text-xs text-slate-500">${l.description}</p></td>
+            <td class="p-3 text-xs font-semibold text-slate-600">${l.location}</td>
+            <td class="p-3 text-right">${l.status==='Unclaimed'?`<button onclick="claimItem(${l.id})" class="text-blue-600 bg-blue-50 px-3 py-1 rounded-lg text-xs font-bold hover:bg-blue-100">Mark Claimed</button>`:'<span class="text-xs font-bold text-slate-400">Claimed</span>'}</td>
+          </tr>
+        `).join('');
+      } catch(e) {}
     }
-    document.getElementById('lForm').onsubmit = async(e)=>{ e.preventDefault(); await fetch(`${API_URL}/lost-found`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({item_name:document.getElementById('lName').value,location:document.getElementById('lLoc').value,description:document.getElementById('lDesc').value})}); e.target.reset(); loadLost(); }
 
-    // Init All Data
-    renderCourses();
-    renderAcad();
-    loadFac();
-    loadTrans();
-    loadComp();
+    async function claimItem(id) {
+      await fetch(`${API_URL}/lost-found/${id}`, {method:'PUT'});
+      loadLost();
+    }
+
+    document.getElementById('lForm').onsubmit = async(e) => { 
+      e.preventDefault(); 
+      await fetch(`${API_URL}/lost-found`, {
+        method:'POST', headers:{'Content-Type':'application/json'}, 
+        body:JSON.stringify({item_name:document.getElementById('lName').value, location:document.getElementById('lLoc').value, description:document.getElementById('lDesc').value})
+      }); 
+      e.target.reset(); loadLost(); 
+    };
+
+    // Initialize all data
+    loadAdminCourses(); 
+    loadAcad(); 
+    loadFac(); 
+    loadTrans(); 
+    loadComp(); 
     loadLost();
   </script>
 </body>

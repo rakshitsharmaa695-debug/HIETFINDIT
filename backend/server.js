@@ -37,7 +37,6 @@ const initDB = async () => {
         role VARCHAR(50)
       );
 
-      -- Fix any old column mismatch safely
       ALTER TABLE users DROP COLUMN IF EXISTS password_hash;
       ALTER TABLE users ADD COLUMN IF NOT EXISTS name VARCHAR(100);
       ALTER TABLE users ADD COLUMN IF NOT EXISTS email VARCHAR(100);
@@ -53,7 +52,9 @@ const initDB = async () => {
         photo TEXT
       );
 
-      -- 1. Complaints Table (Student submits, Admin views)
+      -- ADD NEW COLUMN SAFELY FOR FACULTY SORTING
+      ALTER TABLE faculty ADD COLUMN IF NOT EXISTS sort_order INT DEFAULT 0;
+
       CREATE TABLE IF NOT EXISTS complaints (
         id SERIAL PRIMARY KEY,
         student_name VARCHAR(100),
@@ -64,7 +65,6 @@ const initDB = async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
 
-      -- 2. Transport Table (Admin adds bus info)
       CREATE TABLE IF NOT EXISTS transport (
         id SERIAL PRIMARY KEY,
         bus_number VARCHAR(50),
@@ -73,13 +73,11 @@ const initDB = async () => {
         timing VARCHAR(100)
       );
 
-      -- ADD NEW COLUMNS SAFELY FOR TRANSPORT (Photos, RC, Driver)
       ALTER TABLE transport ADD COLUMN IF NOT EXISTS rc_number VARCHAR(100);
       ALTER TABLE transport ADD COLUMN IF NOT EXISTS driver_name VARCHAR(100);
       ALTER TABLE transport ADD COLUMN IF NOT EXISTS bus_photo TEXT;
       ALTER TABLE transport ADD COLUMN IF NOT EXISTS driver_photo TEXT;
 
-      -- 3. Lost & Found Table (Admin manages)
       CREATE TABLE IF NOT EXISTS lost_found (
         id SERIAL PRIMARY KEY,
         item_name VARCHAR(100),
@@ -89,14 +87,8 @@ const initDB = async () => {
         date_reported TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
 
-      -- ADD NEW COLUMN SAFELY FOR LOST & FOUND (Item Photo)
       ALTER TABLE lost_found ADD COLUMN IF NOT EXISTS item_photo TEXT;
 
-      -- ==========================================
-      -- NAYI TABLES (Added for Courses & Timetable)
-      -- ==========================================
-      
-      -- 4. Courses Table (Admin adds new courses)
       CREATE TABLE IF NOT EXISTS courses (
         id SERIAL PRIMARY KEY,
         name VARCHAR(255),
@@ -107,7 +99,6 @@ const initDB = async () => {
         image TEXT
       );
 
-      -- 5. Academics Table (Timetable & Syllabus)
       CREATE TABLE IF NOT EXISTS academics (
         id SERIAL PRIMARY KEY,
         course VARCHAR(255),
@@ -116,14 +107,14 @@ const initDB = async () => {
         syllabus_link TEXT
       );
     `);
-    console.log('Connected to Cloud PostgreSQL Database & All 7 Tables Verified 🚀');
+    console.log('Connected to Cloud PostgreSQL Database & All Tables Verified 🚀');
   } catch (err) {
     console.error('DB Init Error:', err);
   }
 };
 initDB();
 
-// --- 1. AUTHENTICATION ROUTES (Unchanged & Working) ---
+// --- 1. AUTHENTICATION ROUTES ---
 app.post('/api/auth/register', async (req, res) => {
   const { name, email, password, role } = req.body;
   try {
@@ -135,7 +126,6 @@ app.post('/api/auth/register', async (req, res) => {
     );
     res.json(newUser.rows[0]);
   } catch (err) {
-    console.error("REGISTER ERROR:", err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -172,8 +162,22 @@ app.post('/api/faculty', async (req, res) => {
 
 app.get('/api/faculty', async (req, res) => {
   try {
-    const allFaculty = await pool.query('SELECT * FROM faculty ORDER BY id DESC');
+    // UPDATED: Orders by sort_order first, then id
+    const allFaculty = await pool.query('SELECT * FROM faculty ORDER BY sort_order ASC, id DESC');
     res.json(allFaculty.rows);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// NEW: Faculty Reorder Route
+app.put('/api/faculty/reorder', async (req, res) => {
+  const { orderedIds } = req.body;
+  try {
+    for (let i = 0; i < orderedIds.length; i++) {
+      await pool.query('UPDATE faculty SET sort_order = $1 WHERE id = $2', [i, orderedIds[i]]);
+    }
+    res.json({ message: 'Order updated successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -246,6 +250,21 @@ app.get('/api/transport', async (req, res) => {
   }
 });
 
+// NEW: Edit Transport Route
+app.put('/api/transport/:id', async (req, res) => {
+  const { id } = req.params;
+  const { bus_number, route_name, stops, timing, bus_photo } = req.body;
+  try {
+    await pool.query(
+      'UPDATE transport SET bus_number=$1, route_name=$2, stops=$3, timing=$4, bus_photo=COALESCE($5, bus_photo) WHERE id=$6',
+      [bus_number, route_name, stops, timing, bus_photo, id]
+    );
+    res.json({ message: 'Transport Updated' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 app.delete('/api/transport/:id', async (req, res) => {
   try {
     const { id } = req.params;
@@ -289,10 +308,7 @@ app.put('/api/lost-found/:id', async (req, res) => {
   }
 });
 
-
-// ==========================================
-// --- 6. COURSES ROUTES (NEW 🔥) ---
-// ==========================================
+// --- 6. COURSES ROUTES ---
 app.post('/api/courses', async (req, res) => {
   const { name, duration, seats, eligibility, description, image } = req.body;
   try {
@@ -325,10 +341,7 @@ app.delete('/api/courses/:id', async (req, res) => {
   }
 });
 
-
-// ==========================================
-// --- 7. ACADEMICS (TIMETABLE) ROUTES (NEW 🔥) ---
-// ==========================================
+// --- 7. ACADEMICS (TIMETABLE) ROUTES ---
 app.post('/api/academics', async (req, res) => {
   const { course, semester, timetable_img, syllabus_link } = req.body;
   try {
