@@ -17,7 +17,7 @@ app.use(cors({
   credentials: true
 }));
 
-// 🚀 FIX 1: Increased limit to 50mb because Base64 HD images can easily cross 10mb
+// 🚀 FIX: Increased limit to 50mb for HD Base64 image uploads
 app.use(express.json({ limit: '50mb' })); 
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
@@ -26,7 +26,7 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-// Initialize Database Tables & Fix Column Mismatches (Smart Sync)
+// Initialize Database Tables & Smart Column Sync
 const initDB = async () => {
   try {
     await pool.query(`
@@ -61,7 +61,7 @@ const initDB = async () => {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
       
-      -- 🚀 FIX 2: Safely adding ALL missing columns to old complaints table
+      -- Safely add missing columns to old complaints table
       ALTER TABLE complaints ADD COLUMN IF NOT EXISTS student_name VARCHAR(100);
       ALTER TABLE complaints ADD COLUMN IF NOT EXISTS student_email VARCHAR(100);
       ALTER TABLE complaints ADD COLUMN IF NOT EXISTS title VARCHAR(200);
@@ -86,7 +86,7 @@ const initDB = async () => {
         date_reported TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
       
-      -- 🚀 FIX 3: Safely adding missing columns to old lost_found table
+      -- Safely add missing columns to old lost_found table
       ALTER TABLE lost_found ADD COLUMN IF NOT EXISTS item_name VARCHAR(100);
       ALTER TABLE lost_found ADD COLUMN IF NOT EXISTS description TEXT;
       ALTER TABLE lost_found ADD COLUMN IF NOT EXISTS location VARCHAR(100);
@@ -196,7 +196,6 @@ app.delete('/api/faculty/:id', async (req, res) => {
 
 // --- 3. COMPLAINTS ROUTES ---
 app.post('/api/complaints', async (req, res) => {
-  // 🚀 FIX 4: Added 'attachment' inside the backend route receiver
   const { student_name, student_email, title, description, attachment } = req.body;
   try {
     const newComplaint = await pool.query(
@@ -300,11 +299,34 @@ app.get('/api/lost-found', async (req, res) => {
   }
 });
 
+// Student Requests Claim
+app.put('/api/lost-found/request-claim/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await pool.query("UPDATE lost_found SET status = 'Claim Requested' WHERE id = $1", [id]);
+    res.json({ message: 'Claim Request Sent' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Admin Approves Claim
 app.put('/api/lost-found/:id', async (req, res) => {
   try {
     const { id } = req.params;
     await pool.query("UPDATE lost_found SET status = 'Claimed' WHERE id = $1", [id]);
     res.json({ message: 'Item Marked as Claimed' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Admin Deletes Lost & Found Item Completely
+app.delete('/api/lost-found/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    await pool.query('DELETE FROM lost_found WHERE id = $1', [id]);
+    res.json({ message: 'Item Deleted Successfully' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }

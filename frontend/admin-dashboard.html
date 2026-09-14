@@ -4,6 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Super Admin - HIETFINDIT</title>
+  
+  <!-- 🚀 ADMIN BOUNCER: Security Check -->
+  <script>
+    const checkToken = localStorage.getItem('token');
+    const checkUserStr = localStorage.getItem('user');
+    if (!checkToken || !checkUserStr || JSON.parse(checkUserStr).role !== 'admin') {
+      window.location.replace('index.html'); // Agar admin nahi hai, turant bahar feko
+    }
+  </script>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
@@ -227,7 +237,7 @@
               <input type="text" id="lLoc" placeholder="Location Found" required class="w-full dark-input rounded-lg p-3 text-sm">
               <textarea id="lDesc" placeholder="Description / Contents" required class="w-full dark-input rounded-lg p-3 text-sm h-20"></textarea>
               
-              <!-- NEW: PHOTO UPLOAD OPTION FOR LOST & FOUND -->
+              <!-- PHOTO UPLOAD OPTION -->
               <div>
                 <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-1">Item Photo (Optional)</label>
                 <input type="file" id="lPhoto" accept="image/*" class="w-full dark-input rounded-lg p-2 text-xs">
@@ -252,11 +262,9 @@
 
   <script>
     lucide.createIcons();
+    
+    // Auth Check
     const token = localStorage.getItem('token'); 
-    const userStr = localStorage.getItem('user');
-    
-    if (!token || !userStr || JSON.parse(userStr).role !== 'admin') window.location.href = 'index.html'; 
-    
     const API_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://hietfindit-lqzt.onrender.com/api';
     
     // Convert Image to Base64
@@ -337,7 +345,7 @@
     async function deleteTransport(id) { if(confirm('Delete bus?')) { await fetch(`${API_URL}/transport/${id}`, {method:'DELETE', headers: getAuthHeaders()}); loadTrans(); } }
 
     // ==========================================
-    // 5. COMPLAINTS (With View Attachment Feature)
+    // 5. COMPLAINTS (With View Attachment)
     // ==========================================
     async function loadComp(){ 
       try { 
@@ -367,13 +375,28 @@
     async function resolveComplaint(id) { await fetch(`${API_URL}/complaints/${id}`,{method:'PUT', headers: getAuthHeaders(), body:JSON.stringify({status:'Resolved'})}); loadComp(); }
 
     // ==========================================
-    // 6. LOST & FOUND (With Image Upload Feature)
+    // 6. LOST & FOUND (With Delete & Approve Logic)
     // ==========================================
     async function loadLost(){ 
       try { 
         const r = await fetch(`${API_URL}/lost-found`); 
         const data = await r.json(); 
-        document.getElementById('lTable').innerHTML = data.map(l => `
+        document.getElementById('lTable').innerHTML = data.map(l => {
+          
+          // Dynamic Admin Buttons
+          let adminActions = '';
+          if(l.status === 'Claim Requested') {
+            adminActions = `<button onclick="claimItem('${l._id || l.id}')" class="text-emerald-400 text-[11px] font-bold hover:text-emerald-300 bg-emerald-500/10 px-3 py-1.5 rounded-lg border border-emerald-500/20 transition shadow-sm mb-1 w-full text-center">Approve Claim</button>`;
+          } else if(l.status === 'Unclaimed') {
+            adminActions = `<button onclick="claimItem('${l._id || l.id}')" class="text-indigo-400 text-[11px] font-bold hover:text-indigo-300 bg-indigo-500/10 px-3 py-1.5 rounded-lg border border-indigo-500/20 transition shadow-sm mb-1 w-full text-center">Mark Claimed</button>`;
+          } else {
+            adminActions = `<div class="text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-2 py-1.5 rounded-lg border border-emerald-500/20 mb-1 text-center"><i data-lucide="check" class="w-3 h-3 inline"></i> Claimed</div>`;
+          }
+
+          // Delete button is always available
+          adminActions += `<button onclick="deleteLostItem('${l._id || l.id}')" class="text-red-400 text-[11px] font-bold hover:text-red-300 bg-red-500/10 px-3 py-1.5 rounded-lg border border-red-500/20 transition shadow-sm w-full text-center mt-1 flex items-center justify-center gap-1"><i data-lucide="trash-2" class="w-3 h-3"></i> Delete Item</button>`;
+
+          return `
           <tr class="border-b border-white/10 hover:bg-white/5 transition-colors">
             <td class="p-3">
               <div class="flex items-center gap-3">
@@ -385,17 +408,32 @@
               </div>
             </td>
             <td class="p-3 text-xs text-slate-400"><i data-lucide="map-pin" class="w-3 h-3 inline"></i> ${l.location}</td>
-            <td class="p-3 text-right">
-              ${l.status==='Unclaimed'?`<button onclick="claimItem('${l._id || l.id}')" class="text-indigo-400 text-xs font-bold hover:text-indigo-300 bg-indigo-500/10 px-3 py-1.5 rounded-lg border border-indigo-500/20 transition shadow-sm">Mark Claimed</button>`:'<span class="text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-2 py-1 rounded-full border border-emerald-500/20"><i data-lucide="check" class="w-3 h-3 inline"></i> Claimed</span>'}
+            <td class="p-3 text-right align-middle">
+              <div class="flex flex-col items-end w-28 ml-auto">
+                ${adminActions}
+              </div>
             </td>
-          </tr>`).join(''); 
+          </tr>`
+        }).join(''); 
         lucide.createIcons();
       } catch(e) {} 
     }
     
-    async function claimItem(id) { await fetch(`${API_URL}/lost-found/${id}`, {method:'PUT', headers: getAuthHeaders() }); loadLost(); }
+    // Admin Approves Claim
+    async function claimItem(id) { 
+      await fetch(`${API_URL}/lost-found/${id}`, {method:'PUT', headers: getAuthHeaders() }); 
+      loadLost(); 
+    }
+
+    // Admin Deletes Item
+    async function deleteLostItem(id) {
+      if(confirm('Are you sure you want to completely remove this item from the database?')) {
+        await fetch(`${API_URL}/lost-found/${id}`, {method:'DELETE', headers: getAuthHeaders() });
+        loadLost();
+      }
+    }
     
-    // UPDATED LOST & FOUND SUBMIT FUNCTION WITH IMAGE LOGIC & SECURITY
+    // Admin Submits New Item with Photo
     document.getElementById('lForm').onsubmit = async(e) => { 
       e.preventDefault(); 
       const btn = document.getElementById('lSubmit'); 

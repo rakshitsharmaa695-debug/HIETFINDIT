@@ -11,22 +11,18 @@
     .fade-in { animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-    
-    /* Premium Glass Hover */
     .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); }
     .glass-card:hover { background: rgba(255, 255, 255, 0.08); border-color: rgba(52, 211, 153, 0.4); box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5); }
   </style>
 </head>
 <body class="text-white min-h-screen flex flex-col relative overflow-x-hidden selection:bg-emerald-500/30 selection:text-emerald-200">
 
-  <!-- Cinematic Background -->
   <div class="fixed inset-0 w-full h-full -z-20 overflow-hidden bg-slate-950">
     <img src="1789033601541.jpg" class="absolute inset-0 w-full h-full object-cover scale-110 filter blur-[80px] opacity-20 mix-blend-screen">
     <div class="absolute inset-0 bg-gradient-to-b from-slate-950/90 via-slate-900/80 to-slate-950/95"></div>
   </div>
 
-  <!-- Glassmorphism Navbar -->
-  <nav class="bg-slate-900/40 backdrop-blur-xl border-b border-white/10 px-4 md:px-6 py-4 flex justify-between items-center sticky top-0 z-50 transition-all">
+  <nav class="bg-slate-900/40 backdrop-blur-xl border-b border-white/10 px-4 md:px-6 py-4 flex justify-between items-center sticky top-0 z-50">
     <a href="dashboard.html" class="bg-white/10 hover:bg-white/20 border border-white/10 text-white px-3 md:px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-sm flex items-center gap-2 group backdrop-blur-md">
       <i data-lucide="arrow-left" class="w-4 h-4 transition-transform group-hover:-translate-x-1"></i> <span class="hidden sm:inline">Back to Dashboard</span>
     </a>
@@ -36,28 +32,17 @@
     </div>
   </nav>
 
-  <!-- Hero Header -->
   <div class="py-12 md:py-16 px-4 md:px-6 relative text-center z-10">
     <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-[10px] font-bold border border-emerald-400/30 tracking-widest uppercase mb-4 backdrop-blur-md">
-      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Campus Inventory
+      <i data-lucide="search" class="w-3 h-3"></i> Campus Inventory
     </div>
     <h1 class="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight mb-4">Deposited <span class="text-emerald-400">Items</span></h1>
-    <p class="text-slate-300 max-w-2xl mx-auto text-sm md:text-base px-4 font-medium">Check if your misplaced items have been turned in. Contact the admin desk to claim your belongings.</p>
+    <p class="text-slate-300 max-w-2xl mx-auto text-sm md:text-base px-4 font-medium">Spot your misplaced item? Click "Request Claim" to notify the administration.</p>
   </div>
 
   <main class="flex-1 max-w-7xl mx-auto w-full p-4 sm:p-6 lg:p-10 relative z-20 -mt-6">
     <div id="lostGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 items-stretch">
-      <!-- Loading Skeleton -->
-      <div class="col-span-full flex gap-6 overflow-hidden animate-pulse w-full">
-        <div class="w-full glass-card rounded-[1.5rem] h-[350px] flex flex-col">
-          <div class="w-full h-48 bg-white/5 rounded-t-[1.5rem]"></div>
-          <div class="p-6 flex-1 flex flex-col gap-3">
-            <div class="w-3/4 h-6 bg-white/10 rounded-md"></div>
-            <div class="w-full h-4 bg-white/5 rounded-md mt-2"></div>
-            <div class="w-5/6 h-4 bg-white/5 rounded-md mt-2"></div>
-          </div>
-        </div>
-      </div>
+      <div class="col-span-full text-center py-10"><p class="animate-pulse">Loading Inventory...</p></div>
     </div>
   </main>
 
@@ -65,8 +50,6 @@
     lucide.createIcons();
     if(!localStorage.getItem('token')) { window.location.href = 'index.html'; }
     const API_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://hietfindit-lqzt.onrender.com/api';
-    
-    // Default placeholder for missing item photos
     const FALLBACK_IMAGE = 'https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?q=80&w=800&auto=format&fit=crop';
 
     async function loadLostFound() {
@@ -76,64 +59,62 @@
         const data = await res.json();
         
         if(data.length === 0) {
-          grid.innerHTML = `
-            <div class="col-span-full flex flex-col items-center justify-center py-16 text-slate-300 glass-card rounded-3xl">
-              <div class="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-4 border border-white/10">
-                <i data-lucide="package-open" class="w-10 h-10 text-emerald-400"></i>
-              </div>
-              <h3 class="text-xl font-black text-white">No Items Reported</h3>
-              <p class="text-sm mt-2 text-slate-400 font-medium">There are currently no deposited items in the inventory.</p>
-            </div>`;
-          lucide.createIcons(); 
-          return;
+          grid.innerHTML = `<div class="col-span-full flex flex-col items-center justify-center py-16 text-slate-300 glass-card rounded-3xl"><div class="w-20 h-20 bg-white/5 rounded-full flex items-center justify-center mb-4 border border-white/10"><i data-lucide="package-open" class="w-10 h-10 text-emerald-400"></i></div><h3 class="text-xl font-black text-white">No Items Reported</h3></div>`;
+          lucide.createIcons(); return;
         }
 
         grid.innerHTML = data.map((i, index) => {
           const imgSrc = i.item_photo ? i.item_photo : FALLBACK_IMAGE;
-          const isClaimed = i.status === 'Claimed';
-          const badgeClass = isClaimed 
-            ? 'bg-slate-500/20 text-slate-300 border-slate-500/30' 
-            : 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
-          const badgeIcon = isClaimed ? 'check-circle' : 'alert-circle';
+          
+          // Dynamic Badges & Buttons based on Status
+          let badgeClass = 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
+          let badgeIcon = 'alert-circle';
+          let actionBtn = `<button onclick="requestClaim('${i._id || i.id}')" class="w-full mt-4 bg-indigo-500/20 hover:bg-indigo-500/40 text-indigo-300 font-bold py-2.5 rounded-xl border border-indigo-500/30 transition-all flex justify-center items-center gap-2 shadow-sm text-sm"><i data-lucide="hand" class="w-4 h-4"></i> Request Claim</button>`;
+          
+          if(i.status === 'Claim Requested') {
+            badgeClass = 'bg-amber-500/20 text-amber-400 border-amber-500/30';
+            badgeIcon = 'clock';
+            actionBtn = `<div class="w-full mt-4 bg-amber-500/10 text-amber-300 font-bold py-2.5 rounded-xl border border-amber-500/20 text-center text-sm flex justify-center items-center gap-2"><i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Pending Approval</div>`;
+          } else if(i.status === 'Claimed') {
+            badgeClass = 'bg-slate-500/20 text-slate-300 border-slate-500/30';
+            badgeIcon = 'check-circle';
+            actionBtn = `<div class="w-full mt-4 bg-slate-500/10 text-slate-400 font-bold py-2.5 rounded-xl border border-slate-500/20 text-center text-sm flex justify-center items-center gap-2"><i data-lucide="check" class="w-4 h-4"></i> Already Claimed</div>`;
+          }
 
           return `
           <div class="glass-card rounded-[1.5rem] overflow-hidden flex flex-col h-full transform transition-all duration-300 hover:-translate-y-1.5 fade-in group" style="animation-delay: ${index * 0.05}s">
-            
-            <!-- Magic Image Box (Blur + Contain) -->
             <div class="w-full h-48 relative shrink-0 overflow-hidden bg-slate-900/50 flex items-center justify-center">
               <img src="${imgSrc}" onerror="this.style.display='none'" class="absolute inset-0 w-full h-full object-cover filter blur-xl opacity-40 scale-110">
               <img src="${imgSrc}" onerror="this.src='${FALLBACK_IMAGE}'" class="absolute inset-0 w-full h-full object-contain transition-transform duration-500 group-hover:scale-105 z-10 drop-shadow-xl">
-              
-              <!-- Floating Status Badge -->
               <div class="absolute top-3 right-3 backdrop-blur-md px-3 py-1.5 rounded-lg text-[10px] font-bold uppercase tracking-widest border shadow-lg z-20 flex items-center gap-1.5 ${badgeClass}">
                 <i data-lucide="${badgeIcon}" class="w-3 h-3"></i> ${i.status}
               </div>
             </div>
-
-            <!-- Content Area -->
             <div class="p-6 flex flex-col flex-1 relative z-10">
               <h3 class="font-black text-white text-xl mb-3 leading-tight group-hover:text-emerald-400 transition-colors line-clamp-1">${i.item_name}</h3>
-              
-              <p class="text-sm text-slate-300 mb-6 flex-1 line-clamp-2 leading-relaxed bg-white/5 p-4 rounded-xl border border-white/5" title="${i.description}">
-                ${i.description}
-              </p>
-              
-              <div class="mt-auto pt-4 border-t border-white/10 flex items-center gap-3 text-slate-400 text-sm font-medium">
-                <div class="bg-emerald-500/20 p-1.5 rounded-md border border-emerald-500/20">
-                  <i data-lucide="map-pin" class="w-3.5 h-3.5 text-emerald-400"></i> 
-                </div>
+              <p class="text-sm text-slate-300 mb-6 flex-1 line-clamp-2 leading-relaxed bg-white/5 p-4 rounded-xl border border-white/5" title="${i.description}">${i.description}</p>
+              <div class="pt-4 border-t border-white/10 flex items-center gap-3 text-slate-400 text-sm font-medium">
+                <div class="bg-emerald-500/20 p-1.5 rounded-md border border-emerald-500/20"><i data-lucide="map-pin" class="w-3.5 h-3.5 text-emerald-400"></i></div>
                 <span class="text-white">${i.location || 'Campus Area'}</span>
               </div>
+              ${actionBtn}
             </div>
-            
           </div>
         `}).join('');
         lucide.createIcons();
-      } catch (err) { 
-        grid.innerHTML = '<div class="col-span-full text-center text-red-400 font-bold py-10 glass-card rounded-2xl">Failed to load inventory data.</div>'; 
-      }
+      } catch (err) { grid.innerHTML = '<div class="col-span-full text-center text-red-400 font-bold py-10">Failed to load inventory.</div>'; }
     }
     
+    // NEW: Function to send claim request
+    async function requestClaim(id) {
+      if(!confirm("Are you sure you want to request a claim for this item?")) return;
+      try {
+        await fetch(`${API_URL}/lost-found/request-claim/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'} });
+        alert("Claim Request Sent! Admin will review it.");
+        loadLostFound(); // Refresh the list
+      } catch (e) { alert("Failed to send request."); }
+    }
+
     loadLostFound();
   </script>
 </body>
