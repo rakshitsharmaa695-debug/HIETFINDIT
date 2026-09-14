@@ -6,69 +6,114 @@
   <title>Timetable & Syllabus - HIETFINDIT</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #0f172a; }
+    .fade-in { animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    
+    /* Premium Glass Cards */
+    .glass-card { background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    
+    /* Scrollbar for Timetable Box */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: rgba(255,255,255,0.02); border-radius: 10px; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+    
+    /* Style Dropdown Options in Dark Mode */
+    select option { background-color: #0f172a; color: white; }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+<body class="text-white min-h-screen flex flex-col relative overflow-x-hidden selection:bg-amber-500/30 selection:text-amber-200">
 
-  <nav class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center shadow-sm sticky top-0 z-50">
-    <a href="index.html" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-4 py-2 rounded-lg text-sm font-bold transition flex items-center gap-2">
-      <i data-lucide="arrow-left" class="w-4 h-4"></i> Back to Home
+  <!-- Cinematic Background -->
+  <div class="fixed inset-0 w-full h-full -z-20 overflow-hidden bg-slate-950">
+    <img src="1789033601541.jpg" alt="Campus Blur" class="absolute inset-0 w-full h-full object-cover scale-110 filter blur-[80px] opacity-30 mix-blend-screen">
+    <div class="absolute inset-0 bg-gradient-to-b from-slate-950/80 via-slate-900/70 to-slate-950/90"></div>
+  </div>
+
+  <!-- Glassmorphism Navbar -->
+  <nav class="bg-slate-900/40 backdrop-blur-xl border-b border-white/10 px-4 md:px-6 py-4 flex justify-between items-center shadow-sm sticky top-0 z-50 transition-all">
+    <a href="index.html" class="bg-white/10 hover:bg-white/20 border border-white/10 text-white px-3 md:px-4 py-2 rounded-xl text-sm font-bold transition-all shadow-sm flex items-center gap-2 group backdrop-blur-md">
+      <i data-lucide="arrow-left" class="w-4 h-4 transition-transform group-hover:-translate-x-1"></i> <span class="hidden sm:inline">Back to Home</span>
     </a>
-    <h1 class="text-xl font-black tracking-tight text-slate-900">Academic <span class="text-amber-500">Hub</span></h1>
+    <div class="flex items-center gap-2.5 cursor-pointer" onclick="window.location.href='index.html'">
+      <h1 class="text-lg md:text-xl font-black tracking-tight text-white">Academic <span class="text-amber-400">Hub</span></h1>
+      <div class="bg-gradient-to-br from-amber-400 to-orange-500 p-2 rounded-xl text-white font-black text-xs shadow-lg shadow-amber-500/30"><i data-lucide="calendar-clock" class="w-4 h-4"></i></div>
+    </div>
   </nav>
 
-  <main class="flex-1 max-w-5xl mx-auto w-full p-6 lg:p-10">
-    <div class="mb-10 text-center sm:text-left">
-      <h2 class="text-3xl font-black text-slate-900 tracking-tight">Timetable & Syllabus</h2>
-      <p class="text-slate-500 mt-1">Select your course and semester to view live schedules.</p>
+  <main class="flex-1 max-w-5xl mx-auto w-full p-4 sm:p-6 lg:p-10 relative z-20">
+    <div class="mb-10 text-center sm:text-left fade-in">
+      <h2 class="text-3xl md:text-4xl font-black text-white tracking-tight mb-2">Timetable & Syllabus</h2>
+      <p class="text-slate-300 font-medium">Select your enrolled course and semester to view live academic schedules.</p>
     </div>
 
-    <!-- Filter Section (Dynamic Dropdowns) -->
-    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 mb-8 flex flex-col sm:flex-row gap-4 items-end">
+    <!-- Filter Section (Glassmorphism UI) -->
+    <div class="glass-card rounded-[2rem] p-6 mb-8 flex flex-col sm:flex-row gap-4 items-end fade-in" style="animation-delay: 0.1s;">
       <div class="w-full sm:w-1/2">
-        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Select Course</label>
-        <select id="userCourse" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none font-bold text-slate-700 focus:ring-2 focus:ring-amber-500">
-          <option value="">-- Select Course --</option>
-        </select>
+        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 px-1">Select Course</label>
+        <div class="relative">
+          <select id="userCourse" class="w-full bg-slate-900/60 border border-white/10 rounded-xl py-3.5 px-4 text-sm outline-none font-bold text-white focus:ring-2 focus:ring-amber-500 appearance-none backdrop-blur-md transition-all">
+            <option value="">-- Select Course --</option>
+          </select>
+          <i data-lucide="chevron-down" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"></i>
+        </div>
       </div>
       <div class="w-full sm:w-1/3">
-        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Semester</label>
-        <select id="userSem" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none font-bold text-slate-700 focus:ring-2 focus:ring-amber-500">
-          <option value="">-- Select Semester --</option>
-        </select>
+        <label class="block text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-2 px-1">Semester</label>
+        <div class="relative">
+          <select id="userSem" class="w-full bg-slate-900/60 border border-white/10 rounded-xl py-3.5 px-4 text-sm outline-none font-bold text-white focus:ring-2 focus:ring-amber-500 appearance-none backdrop-blur-md transition-all">
+            <option value="">-- Select Semester --</option>
+          </select>
+          <i data-lucide="chevron-down" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"></i>
+        </div>
       </div>
-      <button onclick="fetchSchedule()" class="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-white px-8 py-3 rounded-xl font-bold shadow-md transition-all flex justify-center gap-2">
+      <button onclick="fetchSchedule()" class="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white px-8 py-3.5 rounded-xl font-bold shadow-lg shadow-amber-500/20 transition-all flex justify-center items-center gap-2 transform hover:-translate-y-0.5">
         Fetch <i data-lucide="search" class="w-4 h-4"></i>
       </button>
     </div>
 
     <!-- Result Display -->
-    <div id="resultArea" class="hidden grid-cols-1 md:grid-cols-2 gap-8">
+    <div id="resultArea" class="hidden grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 fade-in" style="animation-delay: 0.2s;">
       
       <!-- Premium Typed Timetable Card -->
-      <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-200 flex flex-col relative overflow-hidden">
-        <div class="absolute top-0 right-0 w-32 h-32 bg-amber-100 rounded-full blur-3xl -z-10 translate-x-10 -translate-y-10"></div>
-        <h3 class="text-xl font-black text-slate-900 mb-6 flex items-center gap-2"><i data-lucide="calendar-check" class="w-6 h-6 text-amber-500"></i> Weekly Timetable</h3>
+      <div class="glass-card rounded-[2rem] p-6 md:p-8 flex flex-col relative overflow-hidden group">
+        <!-- Abstract Glow inside card -->
+        <div class="absolute top-0 right-0 w-40 h-40 bg-amber-500/20 rounded-full blur-[50px] -z-10 translate-x-10 -translate-y-10 group-hover:bg-amber-500/30 transition-colors duration-500"></div>
         
-        <!-- Rendered Text Box -->
-        <div id="renderTimetable" class="w-full bg-amber-50/50 border border-amber-100 rounded-2xl p-5 mb-4 text-slate-700 font-mono text-sm leading-relaxed whitespace-pre-line overflow-y-auto max-h-72">
+        <h3 class="text-xl md:text-2xl font-black text-white mb-6 flex items-center gap-2">
+          <i data-lucide="calendar-check" class="w-6 h-6 text-amber-400"></i> Weekly Timetable
+        </h3>
+        
+        <!-- Rendered Text Box (Dark Mode Terminal Style) -->
+        <div id="renderTimetable" class="w-full bg-slate-900/80 border border-white/10 shadow-inner rounded-2xl p-5 mb-4 text-slate-300 font-mono text-sm leading-relaxed whitespace-pre-line overflow-y-auto max-h-80 backdrop-blur-md">
           Loading...
         </div>
       </div>
 
       <!-- Syllabus Card -->
-      <div class="bg-white rounded-3xl p-6 shadow-md border border-slate-200 flex flex-col">
-        <h3 class="text-xl font-black text-slate-900 mb-4 flex items-center gap-2"><i data-lucide="book-open" class="w-6 h-6 text-indigo-600"></i> Course Syllabus</h3>
-        <p class="text-sm text-slate-500 mb-6">Download the official syllabus document uploaded by administration.</p>
+      <div class="glass-card rounded-[2rem] p-6 md:p-8 flex flex-col relative overflow-hidden group">
+        <div class="absolute bottom-0 left-0 w-40 h-40 bg-indigo-500/20 rounded-full blur-[50px] -z-10 -translate-x-10 translate-y-10 group-hover:bg-indigo-500/30 transition-colors duration-500"></div>
         
-        <div class="bg-indigo-50 border border-indigo-100 p-4 rounded-xl flex items-center gap-4 mb-6">
-          <div class="bg-indigo-100 p-3 rounded-xl text-indigo-600"><i data-lucide="file-text" class="w-7 h-7"></i></div>
+        <h3 class="text-xl md:text-2xl font-black text-white mb-3 flex items-center gap-2">
+          <i data-lucide="book-open" class="w-6 h-6 text-indigo-400"></i> Course Syllabus
+        </h3>
+        <p class="text-sm text-slate-400 mb-8 font-medium">Download the official syllabus document directly from the cloud administration.</p>
+        
+        <!-- File Display Box -->
+        <div class="bg-white/5 border border-white/10 p-5 rounded-2xl flex items-center gap-4 mb-8 backdrop-blur-sm">
+          <div class="bg-indigo-500/20 p-3 rounded-xl border border-indigo-500/30 text-indigo-400 shadow-inner">
+            <i data-lucide="file-text" class="w-8 h-8"></i>
+          </div>
           <div>
-            <p id="sylTitle" class="font-black text-indigo-900 text-sm">Official_Syllabus.pdf</p>
-            <p class="text-[10px] font-bold text-indigo-500 uppercase mt-1">Verified Cloud Document</p>
+            <p id="sylTitle" class="font-black text-white text-sm md:text-base tracking-wide">Official_Syllabus.pdf</p>
+            <p class="text-[10px] font-bold text-emerald-400 uppercase mt-1 flex items-center gap-1">
+              <i data-lucide="check-circle" class="w-3 h-3"></i> Verified Document
+            </p>
           </div>
         </div>
         
-        <a id="sylBtn" href="#" target="_blank" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl mt-auto shadow-md flex justify-center items-center gap-2 transition-transform hover:-translate-y-0.5">
+        <a id="sylBtn" href="#" target="_blank" class="w-full bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 text-white font-bold py-3.5 rounded-xl mt-auto shadow-lg shadow-indigo-500/30 flex justify-center items-center gap-2 transition-all transform group-hover:-translate-y-1">
           Access Syllabus <i data-lucide="external-link" class="w-4 h-4"></i>
         </a>
       </div>
@@ -76,10 +121,12 @@
     </div>
 
     <!-- Error/Not Found Message -->
-    <div id="errorArea" class="hidden mt-10 text-center">
-      <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-rose-100 text-rose-500 mb-4"><i data-lucide="alert-circle" class="w-8 h-8"></i></div>
-      <h3 class="text-xl font-bold text-slate-900">No Records Found</h3>
-      <p class="text-slate-500">The administration hasn't uploaded a schedule for this specific course & semester yet.</p>
+    <div id="errorArea" class="hidden mt-10 text-center fade-in">
+      <div class="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/5 text-rose-400 mb-4 border border-white/10 shadow-lg backdrop-blur-md">
+        <i data-lucide="alert-circle" class="w-10 h-10"></i>
+      </div>
+      <h3 class="text-2xl font-black text-white tracking-tight">No Records Found</h3>
+      <p class="text-slate-400 mt-2 font-medium max-w-md mx-auto">The administration hasn't uploaded a schedule for this specific course and semester combination yet.</p>
     </div>
 
   </main>
@@ -88,78 +135,51 @@
     lucide.createIcons();
     const API_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://hietfindit-lqzt.onrender.com/api';
     
-    let allCourses = [];
-    let allSchedules = [];
+    let allCourses = []; let allSchedules = [];
 
-    // 1. Fetch data on load to populate Dropdowns
+    // Fetch data
     async function initData() {
       try {
-        const [courseRes, acadRes] = await Promise.all([
-          fetch(`${API_URL}/courses`),
-          fetch(`${API_URL}/academics`)
-        ]);
-        allCourses = await courseRes.json();
-        allSchedules = await acadRes.json();
-
-        // Populate Course Dropdown
+        const [courseRes, acadRes] = await Promise.all([ fetch(`${API_URL}/courses`), fetch(`${API_URL}/academics`) ]);
+        allCourses = await courseRes.json(); allSchedules = await acadRes.json();
         const cSelect = document.getElementById('userCourse');
-        allCourses.forEach(c => {
-          cSelect.innerHTML += `<option value="${c.name}">${c.name}</option>`;
-        });
+        allCourses.forEach(c => { cSelect.innerHTML += `<option value="${c.name}">${c.name}</option>`; });
       } catch (err) { console.error(err); }
     }
 
-    // 2. Smart Semester Calculator
+    // Smart Semester Dropdown
     document.getElementById('userCourse').addEventListener('change', function(e) {
       const course = allCourses.find(c => c.name === e.target.value);
       const semSelect = document.getElementById('userSem');
       semSelect.innerHTML = '<option value="">-- Select Semester --</option>';
-      
       if(course) {
         let maxSems = 8;
-        if(course.duration.includes('1')) maxSems = 2;
-        if(course.duration.includes('2')) maxSems = 4;
-        if(course.duration.includes('3')) maxSems = 6;
-        if(course.duration.includes('4')) maxSems = 8;
-        
-        for(let i = 1; i <= maxSems; i++) {
-          semSelect.innerHTML += `<option value="Semester ${i}">Semester ${i}</option>`;
-        }
+        if(course.duration.includes('1')) maxSems = 2; else if(course.duration.includes('2')) maxSems = 4;
+        else if(course.duration.includes('3')) maxSems = 6; else if(course.duration.includes('4')) maxSems = 8;
+        else if(course.duration.includes('5')) maxSems = 10;
+        for(let i = 1; i <= maxSems; i++) semSelect.innerHTML += `<option value="Semester ${i}">Semester ${i}</option>`;
       }
     });
 
-    // 3. Match and Render UI
+    // Render Function
     function fetchSchedule() {
       const selectedCourse = document.getElementById('userCourse').value;
       const selectedSem = document.getElementById('userSem').value;
       
-      if(!selectedCourse || !selectedSem) {
-        alert("Please select both Course and Semester!"); return;
-      }
+      if(!selectedCourse || !selectedSem) { alert("Please select both Course and Semester!"); return; }
 
-      // Find match in DB
       const record = allSchedules.find(a => a.course === selectedCourse && a.semester === selectedSem);
-
-      const resultArea = document.getElementById('resultArea');
-      const errorArea = document.getElementById('errorArea');
+      const resultArea = document.getElementById('resultArea'); const errorArea = document.getElementById('errorArea');
 
       if(record) {
-        // Render Data
-        document.getElementById('renderTimetable').textContent = record.timetable_img; // Rich text rendering
+        document.getElementById('renderTimetable').textContent = record.timetable_img; 
         document.getElementById('sylBtn').href = record.syllabus_link;
-        document.getElementById('sylTitle').textContent = `${record.course}_${record.semester}_Syllabus.pdf`;
-        
-        resultArea.classList.remove('hidden');
-        resultArea.classList.add('grid');
-        errorArea.classList.add('hidden');
+        document.getElementById('sylTitle').textContent = `${record.course.replace(/\s+/g, '_')}_${record.semester.replace(/\s+/g, '')}_Syllabus.pdf`;
+        resultArea.classList.remove('hidden'); resultArea.classList.add('grid'); errorArea.classList.add('hidden');
       } else {
-        // Show Not Found
-        resultArea.classList.add('hidden');
-        resultArea.classList.remove('grid');
-        errorArea.classList.remove('hidden');
+        resultArea.classList.add('hidden'); resultArea.classList.remove('grid'); errorArea.classList.remove('hidden');
       }
     }
-
     initData();
   </script>
 </body>

@@ -17,15 +17,16 @@ app.use(cors({
   credentials: true
 }));
 
-// Increased limit to 10mb for uploading Base64 photos
-app.use(express.json({ limit: '10mb' })); 
+// 🚀 FIX 1: Increased limit to 50mb because Base64 HD images can easily cross 10mb
+app.use(express.json({ limit: '50mb' })); 
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
 
-// Initialize Database Tables & Fix Column Mismatches
+// Initialize Database Tables & Fix Column Mismatches (Smart Sync)
 const initDB = async () => {
   try {
     await pool.query(`
@@ -36,7 +37,6 @@ const initDB = async () => {
         password VARCHAR(255),
         role VARCHAR(50)
       );
-
       ALTER TABLE users DROP COLUMN IF EXISTS password_hash;
       ALTER TABLE users ADD COLUMN IF NOT EXISTS name VARCHAR(100);
       ALTER TABLE users ADD COLUMN IF NOT EXISTS email VARCHAR(100);
@@ -51,19 +51,22 @@ const initDB = async () => {
         cabin VARCHAR(100),
         photo TEXT
       );
-
-      -- ADD NEW COLUMN SAFELY FOR FACULTY SORTING
       ALTER TABLE faculty ADD COLUMN IF NOT EXISTS sort_order INT DEFAULT 0;
 
       CREATE TABLE IF NOT EXISTS complaints (
         id SERIAL PRIMARY KEY,
-        student_name VARCHAR(100),
-        student_email VARCHAR(100),
         title VARCHAR(200),
         description TEXT,
         status VARCHAR(50) DEFAULT 'Pending',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
+      
+      -- 🚀 FIX 2: Safely adding ALL missing columns to old complaints table
+      ALTER TABLE complaints ADD COLUMN IF NOT EXISTS student_name VARCHAR(100);
+      ALTER TABLE complaints ADD COLUMN IF NOT EXISTS student_email VARCHAR(100);
+      ALTER TABLE complaints ADD COLUMN IF NOT EXISTS title VARCHAR(200);
+      ALTER TABLE complaints ADD COLUMN IF NOT EXISTS description TEXT;
+      ALTER TABLE complaints ADD COLUMN IF NOT EXISTS attachment TEXT;
 
       CREATE TABLE IF NOT EXISTS transport (
         id SERIAL PRIMARY KEY,
@@ -72,7 +75,6 @@ const initDB = async () => {
         stops TEXT,
         timing VARCHAR(100)
       );
-
       ALTER TABLE transport ADD COLUMN IF NOT EXISTS rc_number VARCHAR(100);
       ALTER TABLE transport ADD COLUMN IF NOT EXISTS driver_name VARCHAR(100);
       ALTER TABLE transport ADD COLUMN IF NOT EXISTS bus_photo TEXT;
@@ -80,13 +82,14 @@ const initDB = async () => {
 
       CREATE TABLE IF NOT EXISTS lost_found (
         id SERIAL PRIMARY KEY,
-        item_name VARCHAR(100),
-        description TEXT,
-        location VARCHAR(100),
         status VARCHAR(50) DEFAULT 'Unclaimed',
         date_reported TIMESTAMP DEFAULT CURRENT_TIMESTAMP
       );
-
+      
+      -- 🚀 FIX 3: Safely adding missing columns to old lost_found table
+      ALTER TABLE lost_found ADD COLUMN IF NOT EXISTS item_name VARCHAR(100);
+      ALTER TABLE lost_found ADD COLUMN IF NOT EXISTS description TEXT;
+      ALTER TABLE lost_found ADD COLUMN IF NOT EXISTS location VARCHAR(100);
       ALTER TABLE lost_found ADD COLUMN IF NOT EXISTS item_photo TEXT;
 
       CREATE TABLE IF NOT EXISTS courses (
@@ -162,7 +165,6 @@ app.post('/api/faculty', async (req, res) => {
 
 app.get('/api/faculty', async (req, res) => {
   try {
-    // UPDATED: Orders by sort_order first, then id
     const allFaculty = await pool.query('SELECT * FROM faculty ORDER BY sort_order ASC, id DESC');
     res.json(allFaculty.rows);
   } catch (err) {
@@ -170,7 +172,6 @@ app.get('/api/faculty', async (req, res) => {
   }
 });
 
-// NEW: Faculty Reorder Route
 app.put('/api/faculty/reorder', async (req, res) => {
   const { orderedIds } = req.body;
   try {
@@ -195,11 +196,12 @@ app.delete('/api/faculty/:id', async (req, res) => {
 
 // --- 3. COMPLAINTS ROUTES ---
 app.post('/api/complaints', async (req, res) => {
-  const { student_name, student_email, title, description } = req.body;
+  // 🚀 FIX 4: Added 'attachment' inside the backend route receiver
+  const { student_name, student_email, title, description, attachment } = req.body;
   try {
     const newComplaint = await pool.query(
-      'INSERT INTO complaints (student_name, student_email, title, description) VALUES ($1, $2, $3, $4) RETURNING *',
-      [student_name, student_email, title, description]
+      'INSERT INTO complaints (student_name, student_email, title, description, attachment) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+      [student_name, student_email, title, description, attachment]
     );
     res.status(201).json(newComplaint.rows[0]);
   } catch (err) {
@@ -250,7 +252,6 @@ app.get('/api/transport', async (req, res) => {
   }
 });
 
-// NEW: Edit Transport Route
 app.put('/api/transport/:id', async (req, res) => {
   const { id } = req.params;
   const { bus_number, route_name, stops, timing, bus_photo } = req.body;
@@ -285,6 +286,7 @@ app.post('/api/lost-found', async (req, res) => {
     );
     res.status(201).json(newItem.rows[0]);
   } catch (err) {
+    console.error("Lost & Found DB Error:", err.message);
     res.status(500).json({ error: err.message });
   }
 });

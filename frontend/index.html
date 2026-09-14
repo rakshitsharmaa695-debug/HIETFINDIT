@@ -4,129 +4,173 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Smart Campus - HIETFINDIT</title>
+  
+  <!-- 🚀 THE ADMIN BOUNCER: Page load hone se pehle hi Admin ko bahar fek dega -->
+  <script>
+    const checkToken = localStorage.getItem('token');
+    const checkUserStr = localStorage.getItem('user');
+    if (checkToken && checkUserStr) {
+      const u = JSON.parse(checkUserStr);
+      if (u.role === 'admin') {
+        window.location.replace('admin-dashboard.html'); // Instant Redirect to Admin Panel
+      }
+    }
+  </script>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    body { background-color: #f8fafc; }
-    .modal-enter { animation: modalIn 0.3s ease-out forwards; }
-    .modal-exit { animation: modalOut 0.3s ease-in forwards; }
-    @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(-10px); } to { opacity: 1; transform: scale(1) translateY(0); } }
-    @keyframes modalOut { from { opacity: 1; transform: scale(1) translateY(0); } to { opacity: 0; transform: scale(0.95) translateY(-10px); } }
+    body { font-family: 'Inter', sans-serif; background-color: #0a0f1c; }
+    .modal-enter { animation: modalIn 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .modal-exit { animation: modalOut 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    @keyframes modalIn { from { opacity: 0; transform: scale(0.95) translateY(-20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    @keyframes modalOut { from { opacity: 1; transform: scale(1) translateY(0); } to { opacity: 0; transform: scale(0.95) translateY(-20px); } }
+    @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-12px); } 100% { transform: translateY(0px); } }
+    .floating-card { animation: float 6s ease-in-out infinite; }
+    .text-gradient { background: linear-gradient(135deg, #a5b4fc, #60a5fa); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+    .dark-input { background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(255, 255, 255, 0.1); color: white; transition: all 0.3s ease; }
+    .dark-input:focus { border-color: #818cf8; background: rgba(15, 23, 42, 0.9); outline: none; box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.2); }
   </style>
 </head>
-<body class="text-slate-800 font-sans min-h-screen flex flex-col relative overflow-x-hidden">
+<body class="text-white min-h-screen flex flex-col relative overflow-x-hidden selection:bg-indigo-500/30 selection:text-indigo-200">
 
-  <!-- Navbar -->
-  <nav class="bg-white border-b border-slate-200 px-6 py-4 flex justify-between items-center shadow-sm sticky top-0 z-40">
-    <div class="flex items-center gap-3">
-      <div class="bg-indigo-600 p-2 rounded-lg text-white font-black text-xs shadow-md">HF</div>
-      <h1 class="text-xl font-black tracking-tight text-slate-900">HIET<span class="text-indigo-600">FINDIT</span></h1>
+  <!-- Cinematic Immersive Background -->
+  <div class="fixed inset-0 w-full h-full -z-20 overflow-hidden bg-[#0a0f1c]">
+    <img src="1789033601541.jpg" alt="Background Blur" class="absolute inset-0 w-full h-full object-cover scale-110 filter blur-[60px] opacity-30 mix-blend-lighten">
+    <div class="absolute inset-0 bg-gradient-to-br from-[#0a0f1c]/90 via-indigo-950/60 to-[#0a0f1c]/95"></div>
+  </div>
+
+  <!-- Premium Glassmorphism Navbar -->
+  <nav class="bg-[#0a0f1c]/50 backdrop-blur-xl border-b border-white/10 px-6 py-4 flex justify-between items-center shadow-2xl sticky top-0 z-40 transition-all">
+    <div class="flex items-center gap-3 cursor-pointer group" onclick="window.location.reload()">
+      <div class="bg-gradient-to-br from-indigo-500 to-blue-500 p-2 rounded-xl text-white font-black text-xs shadow-lg shadow-indigo-500/30 group-hover:scale-105 transition-transform">HF</div>
+      <h1 class="text-xl font-black tracking-tight text-white">HIET<span class="text-indigo-400">FINDIT</span></h1>
     </div>
     
-    <!-- Centered Nav Links (Mandatory Login Protected) -->
-    <div class="hidden md:flex items-center gap-6">
-      <button onclick="navigate('courses.html')" class="text-sm font-semibold text-slate-600 hover:text-indigo-600 flex items-center gap-1.5 transition-colors"><i data-lucide="book-open" class="w-4 h-4"></i> Courses</button>
-      <button onclick="navigate('timetable.html')" class="text-sm font-semibold text-slate-600 hover:text-indigo-600 flex items-center gap-1.5 transition-colors"><i data-lucide="calendar" class="w-4 h-4"></i> Timetable</button>
-      <button onclick="navigate('faculty.html')" class="text-sm font-semibold text-slate-600 hover:text-indigo-600 flex items-center gap-1.5 transition-colors"><i data-lucide="users" class="w-4 h-4"></i> Faculty</button>
-      <button onclick="navigate('support.html')" class="text-sm font-semibold text-slate-600 hover:text-indigo-600 flex items-center gap-1.5 transition-colors"><i data-lucide="message-square" class="w-4 h-4"></i> Support</button>
-      <button onclick="navigate('transport.html')" class="text-sm font-semibold text-slate-600 hover:text-indigo-600 flex items-center gap-1.5 transition-colors"><i data-lucide="bus" class="w-4 h-4"></i> Transport</button>
+    <!-- Desktop Nav Links (UPDATED: Support and Lost & Found Added Here) -->
+    <div class="hidden lg:flex items-center gap-6 bg-white/5 px-6 py-2.5 rounded-full border border-white/5 shadow-inner">
+      <button onclick="navigate('courses.html')" class="text-sm font-bold text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors"><i data-lucide="book-open" class="w-4 h-4 text-indigo-400"></i> Courses</button>
+      <button onclick="navigate('timetable.html')" class="text-sm font-bold text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors"><i data-lucide="calendar" class="w-4 h-4 text-indigo-400"></i> Timetable</button>
+      <button onclick="navigate('faculty.html')" class="text-sm font-bold text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors"><i data-lucide="users" class="w-4 h-4 text-indigo-400"></i> Faculty</button>
+      <button onclick="navigate('transport.html')" class="text-sm font-bold text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors"><i data-lucide="bus" class="w-4 h-4 text-indigo-400"></i> Transport</button>
+      <button onclick="navigate('complaints.html')" class="text-sm font-bold text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors"><i data-lucide="message-square-warning" class="w-4 h-4 text-rose-400"></i> Support</button>
+      <button onclick="navigate('lost-found.html')" class="text-sm font-bold text-slate-300 hover:text-white flex items-center gap-1.5 transition-colors"><i data-lucide="box" class="w-4 h-4 text-emerald-400"></i> Lost & Found</button>
     </div>
 
-    <!-- Dynamic Navbar Actions (Login / Dashboard) -->
-    <div id="navActions" class="flex items-center gap-3">
-      <button onclick="openAuthModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg text-sm font-bold shadow-md transition-all flex items-center gap-2">
-        Login / Register <i data-lucide="log-in" class="w-4 h-4"></i>
+    <!-- Right Side Actions & Mobile Hamburger -->
+    <div class="flex items-center gap-3">
+      <div id="navActions" class="hidden sm:flex items-center gap-3">
+        <button onclick="openAuthModal()" class="bg-white/10 hover:bg-white/20 border border-white/10 backdrop-blur-md text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg transition-all flex items-center gap-2 transform hover:-translate-y-0.5">
+          Login / Register <i data-lucide="log-in" class="w-4 h-4"></i>
+        </button>
+      </div>
+      <!-- Hamburger Menu (Visible on smaller screens) -->
+      <button onclick="toggleMobileMenu()" class="lg:hidden p-2 text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg transition-all">
+        <i data-lucide="menu" class="w-5 h-5"></i>
       </button>
     </div>
   </nav>
 
+  <!-- Dark Theme Mobile Menu -->
+  <div id="mobileMenu" class="fixed inset-y-0 right-0 w-72 bg-[#0a0f1c]/95 backdrop-blur-2xl shadow-2xl border-l border-white/10 z-50 transform translate-x-full transition-transform duration-300 flex flex-col p-6 overflow-y-auto">
+    <div class="flex justify-between items-center mb-6 pb-4 border-b border-white/10">
+      <h2 class="font-black text-lg text-white">Menu</h2>
+      <button onclick="toggleMobileMenu()" class="p-2 text-slate-400 hover:text-red-400 bg-white/5 hover:bg-red-500/20 rounded-full transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+    </div>
+    <div class="flex flex-col gap-2 flex-1">
+      <button onclick="navigate('courses.html')" class="text-left font-bold text-slate-300 p-3.5 rounded-xl hover:bg-white/10 hover:text-white flex items-center gap-3 transition-colors"><i data-lucide="book-open" class="w-5 h-5 text-indigo-400"></i> Courses</button>
+      <button onclick="navigate('timetable.html')" class="text-left font-bold text-slate-300 p-3.5 rounded-xl hover:bg-white/10 hover:text-white flex items-center gap-3 transition-colors"><i data-lucide="calendar" class="w-5 h-5 text-indigo-400"></i> Timetable</button>
+      <button onclick="navigate('faculty.html')" class="text-left font-bold text-slate-300 p-3.5 rounded-xl hover:bg-white/10 hover:text-white flex items-center gap-3 transition-colors"><i data-lucide="users" class="w-5 h-5 text-indigo-400"></i> Faculty</button>
+      <button onclick="navigate('transport.html')" class="text-left font-bold text-slate-300 p-3.5 rounded-xl hover:bg-white/10 hover:text-white flex items-center gap-3 transition-colors"><i data-lucide="bus" class="w-5 h-5 text-indigo-400"></i> Transport</button>
+      <button onclick="navigate('complaints.html')" class="text-left font-bold text-slate-300 p-3.5 rounded-xl hover:bg-rose-500/10 hover:text-rose-400 flex items-center gap-3 transition-colors"><i data-lucide="message-square-warning" class="w-5 h-5 text-rose-400"></i> Support</button>
+      <button onclick="navigate('lost-found.html')" class="text-left font-bold text-slate-300 p-3.5 rounded-xl hover:bg-emerald-500/10 hover:text-emerald-400 flex items-center gap-3 transition-colors"><i data-lucide="box" class="w-5 h-5 text-emerald-400"></i> Lost & Found</button>
+    </div>
+    <div id="mobileNavActions" class="mt-auto pt-4 border-t border-white/10">
+      <button onclick="openAuthModal(); toggleMobileMenu();" class="w-full bg-gradient-to-r from-indigo-500 to-blue-500 text-white px-5 py-3.5 rounded-xl text-sm font-bold shadow-lg shadow-indigo-500/30 flex justify-center items-center gap-2">
+        Login / Register <i data-lucide="log-in" class="w-4 h-4"></i>
+      </button>
+    </div>
+  </div>
+  <div id="mobileOverlay" onclick="toggleMobileMenu()" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-40 hidden transition-opacity"></div>
+
   <!-- Hero Section -->
-  <main class="flex-1 max-w-7xl mx-auto w-full p-6 lg:p-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-    
-    <!-- Left Text Area -->
-    <div>
-      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 text-indigo-600 text-[10px] font-bold mb-6 border border-indigo-100 tracking-widest uppercase">
-        <span class="w-1.5 h-1.5 rounded-full bg-indigo-600 animate-pulse"></span> Digital Campus Network
+  <main class="flex-1 max-w-7xl mx-auto w-full p-6 lg:p-12 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10 md:mt-8">
+    <div class="flex flex-col items-start mt-4 md:mt-0">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-indigo-500/10 text-indigo-300 text-[10px] md:text-xs font-bold mb-6 border border-indigo-400/20 shadow-inner uppercase tracking-wider backdrop-blur-md">
+        <span class="w-2 h-2 rounded-full bg-indigo-400 animate-ping absolute"></span>
+        <span class="w-2 h-2 rounded-full bg-indigo-400 relative"></span> Digital Campus Network
       </div>
-      <h2 class="text-5xl lg:text-7xl font-black text-slate-900 tracking-tight leading-[1.1] mb-6">
-        Welcome to <br><span class="text-indigo-600">HIETFINDIT.</span>
+      
+      <h2 class="text-4xl sm:text-5xl lg:text-7xl font-black text-white tracking-tight leading-[1.15] mb-4 md:mb-6">
+        Welcome to <br><span class="text-gradient">HIETFINDIT.</span>
       </h2>
-      <p class="text-lg text-slate-500 mb-10 max-w-lg">
+      <p class="text-base md:text-lg text-slate-300 mb-8 md:mb-10 max-w-lg leading-relaxed font-medium">
         Your central hub for all campus services. Explore our top courses, find faculty details, and manage your academic life seamlessly.
       </p>
       
-      <div class="flex flex-col sm:flex-row items-center gap-4">
-        <button onclick="navigate('dashboard.html')" class="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white px-8 py-3.5 rounded-xl font-bold shadow-lg transition-all flex items-center justify-center gap-2">
+      <div class="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+        <button id="heroDashBtn" onclick="navigate('dashboard.html')" class="w-full sm:w-auto bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 text-white px-8 py-3.5 md:py-4 rounded-xl font-bold shadow-xl shadow-indigo-500/30 flex items-center justify-center gap-2 transition-all transform hover:-translate-y-1">
           <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Go to Dashboard
         </button>
-        <button onclick="navigate('courses.html')" class="w-full sm:w-auto bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 px-8 py-3.5 rounded-xl font-bold shadow-sm transition-all flex items-center justify-center gap-2">
+        <button onclick="navigate('courses.html')" class="w-full sm:w-auto bg-white/5 border border-white/20 hover:bg-white/10 hover:border-white/40 text-white px-8 py-3.5 md:py-4 rounded-xl font-bold flex items-center justify-center gap-2 backdrop-blur-md transition-all">
           <i data-lucide="book-open" class="w-5 h-5"></i> Explore Courses
         </button>
       </div>
     </div>
 
     <!-- Right Image Area -->
-    <div class="relative">
-      <div class="absolute -inset-4 bg-indigo-100 rounded-3xl blur-2xl opacity-50 -z-10"></div>
-      
-      <div class="bg-white rounded-3xl p-4 shadow-xl border border-slate-100 relative">
-        <img src="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="College Campus" class="w-full h-[400px] object-cover rounded-2xl">
-        
-        <div class="absolute -bottom-5 left-1/2 -translate-x-1/2 bg-white px-6 py-2 rounded-full shadow-lg border border-slate-100 flex items-center gap-2">
-          <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
-          <span class="text-xs font-bold text-slate-700 uppercase tracking-widest">Campus Portal Active</span>
+    <div class="relative w-full max-w-sm sm:max-w-md md:max-w-lg mx-auto floating-card mt-8 md:mt-0 group">
+      <div class="absolute -inset-2 bg-gradient-to-tr from-indigo-500 to-blue-400 rounded-[2.5rem] blur-2xl opacity-40 group-hover:opacity-70 transition-opacity duration-700 -z-10"></div>
+      <div class="bg-white/10 backdrop-blur-xl rounded-[2rem] p-2 md:p-3 shadow-2xl border border-white/20 relative z-10">
+        <img src="1789033601541.jpg" alt="HIET Campus" class="w-full h-[250px] sm:h-[300px] md:h-[400px] object-cover rounded-[1.5rem] shadow-inner">
+        <div class="absolute -bottom-4 md:-bottom-6 left-1/2 -translate-x-1/2 bg-[#0a0f1c]/90 backdrop-blur-md px-5 md:px-6 py-2.5 md:py-3 rounded-full shadow-2xl border border-white/10 flex items-center gap-2 md:gap-3 w-max">
+          <span class="relative flex h-2 w-2 md:h-3 md:w-3"><span class="animate-ping absolute h-full w-full rounded-full bg-emerald-400 opacity-75"></span><span class="relative rounded-full h-2 w-2 md:h-3 md:w-3 bg-emerald-500"></span></span>
+          <span class="text-[10px] md:text-xs font-bold text-white uppercase tracking-widest">Campus Active</span>
         </div>
       </div>
     </div>
   </main>
 
-
-  <!-- ========================================== -->
-  <!-- AUTHENTICATION MODAL (POPUP) -->
-  <!-- ========================================== -->
-  <div id="authModalOverlay" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-    <div id="authModal" class="bg-white w-full max-w-md rounded-3xl shadow-2xl p-8 relative">
+  <!-- Auth Modal -->
+  <div id="authModalOverlay" class="hidden fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-center justify-center p-4 transition-opacity duration-300">
+    <div id="authModal" class="bg-[#0f172a]/90 backdrop-blur-2xl w-full max-w-md rounded-[2rem] shadow-2xl p-6 md:p-8 relative border border-white/10 max-h-[90vh] overflow-y-auto">
       
-      <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 bg-slate-50 hover:bg-slate-100 p-2 rounded-full transition-colors">
-        <i data-lucide="x" class="w-5 h-5"></i>
-      </button>
+      <div class="absolute -top-20 -right-20 w-40 h-40 bg-indigo-500/20 rounded-full blur-[40px] pointer-events-none"></div>
 
+      <button onclick="closeAuthModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white hover:bg-white/10 p-2 rounded-full transition-colors"><i data-lucide="x" class="w-5 h-5"></i></button>
+      
       <div class="text-center mb-6">
-        <div class="inline-flex items-center justify-center w-12 h-12 bg-indigo-600 rounded-xl text-white font-black text-lg shadow-lg mb-3">HF</div>
-        <h3 class="text-2xl font-black text-slate-900" id="modalTitle">Welcome Back</h3>
-        <p class="text-sm text-slate-500 mt-1 font-medium" id="modalDesc">Sign in to your portal</p>
+        <div class="inline-flex items-center justify-center w-12 h-12 md:w-14 md:h-14 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-2xl text-white font-black text-xl shadow-lg shadow-indigo-500/30 mb-4">HF</div>
+        <h3 class="text-xl md:text-2xl font-black text-white" id="modalTitle">Welcome Back</h3>
       </div>
-
-      <div class="flex bg-slate-100 p-1 rounded-xl mb-6">
-        <button type="button" onclick="switchAuthMode('login')" id="tabLogin" class="flex-1 py-2 text-sm font-bold rounded-lg bg-white text-indigo-600 shadow-sm transition-all">Login</button>
-        <button type="button" onclick="switchAuthMode('register')" id="tabRegister" class="flex-1 py-2 text-sm font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all">Register</button>
+      
+      <div class="flex bg-white/5 p-1.5 rounded-xl mb-6 shadow-inner border border-white/5">
+        <button type="button" onclick="switchAuthMode('login')" id="tabLogin" class="flex-1 py-2 text-sm font-bold rounded-lg bg-white/10 text-white shadow-sm border border-white/10 transition-all">Login</button>
+        <button type="button" onclick="switchAuthMode('register')" id="tabRegister" class="flex-1 py-2 text-sm font-bold rounded-lg text-slate-400 hover:text-white transition-all">Register</button>
       </div>
-
-      <form id="authForm" class="space-y-4">
+      
+      <form id="authForm" class="space-y-4 relative z-10">
         <div id="nameField" class="hidden">
-          <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Full Name</label>
-          <input type="text" id="authName" placeholder="Your Name" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-        </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Email Address</label>
           <div class="relative">
-            <i data-lucide="mail" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-            <input type="email" id="authEmail" required placeholder="you@example.com" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 pl-10 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
+            <i data-lucide="user" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+            <input type="text" id="authName" placeholder="Full Name" class="w-full dark-input rounded-xl py-3.5 pl-11 text-sm font-bold">
           </div>
         </div>
-
-        <div>
-          <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Password</label>
-          <div class="relative">
-            <i data-lucide="lock" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-            <input type="password" id="authPassword" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 pl-10 text-sm outline-none focus:ring-2 focus:ring-indigo-500">
-          </div>
+        <div class="relative">
+          <i data-lucide="mail" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+          <input type="email" id="authEmail" required placeholder="Email Address" class="w-full dark-input rounded-xl py-3.5 pl-11 text-sm font-bold">
         </div>
-
-        <div id="authAlert" class="hidden p-3 rounded-lg text-xs font-bold text-center"></div>
-
-        <button type="submit" id="authSubmitBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 mt-2">
+        <div class="relative">
+          <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+          <input type="password" id="authPassword" required placeholder="Password" class="w-full dark-input rounded-xl py-3.5 pl-11 text-sm font-bold">
+        </div>
+        
+        <div id="authAlert" class="hidden p-3 rounded-xl text-xs font-bold text-center border"></div>
+        
+        <button type="submit" id="authSubmitBtn" class="w-full bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-indigo-500/30 transition-all flex items-center justify-center gap-2 mt-2 transform hover:-translate-y-0.5">
           Sign In <i data-lucide="arrow-right" class="w-4 h-4"></i>
         </button>
       </form>
@@ -135,22 +179,23 @@
 
   <script>
     lucide.createIcons();
-    const API_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://hietfindit-lqzt.onrender.com/api';
     
-    let isLoginMode = true;
-    let pendingNavigation = null;
+    function toggleMobileMenu() {
+      document.getElementById('mobileMenu').classList.toggle('translate-x-full');
+      document.getElementById('mobileOverlay').classList.toggle('hidden');
+    }
 
-    // MANDATORY LOGIN ROUTER
+    const API_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://hietfindit-lqzt.onrender.com/api';
+    let isLoginMode = true; let pendingNavigation = null;
+
     function navigate(targetUrl) {
       const token = localStorage.getItem('token');
-      const userStr = localStorage.getItem('user');
-
-      if (token && userStr) {
+      if (token) {
         if(targetUrl === 'dashboard.html') {
-          const user = JSON.parse(userStr);
-          window.location.href = user.role === 'admin' ? 'admin-dashboard.html' : 'dashboard.html';
+           const role = JSON.parse(localStorage.getItem('user')).role;
+           window.location.href = role === 'admin' ? 'admin-dashboard.html' : 'dashboard.html';
         } else {
-          window.location.href = targetUrl;
+           window.location.href = targetUrl;
         }
       } else {
         pendingNavigation = targetUrl;
@@ -159,152 +204,98 @@
       }
     }
 
-    // CHECK LOGIN STATE ON PAGE LOAD
     function checkAuthState() {
       const token = localStorage.getItem('token');
       const userStr = localStorage.getItem('user');
-      const navActions = document.getElementById('navActions');
-
       if (token && userStr) {
         const user = JSON.parse(userStr);
-        if(user.role === 'admin') {
-          navActions.innerHTML = `
-            <button onclick="navigate('admin-dashboard.html')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg text-sm font-bold shadow-md transition-all flex items-center gap-2">Admin Panel <i data-lucide="shield" class="w-4 h-4"></i></button>
-            <button onclick="logout()" class="bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-red-600 px-3 py-2 rounded-lg text-sm font-bold transition-all" title="Logout"><i data-lucide="log-out" class="w-4 h-4"></i></button>
-          `;
-        } else {
-          navActions.innerHTML = `
-            <button onclick="navigate('dashboard.html')" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg text-sm font-bold shadow-md transition-all flex items-center gap-2">My Dashboard <i data-lucide="layout-dashboard" class="w-4 h-4"></i></button>
-            <button onclick="logout()" class="bg-slate-100 hover:bg-red-50 text-slate-600 hover:text-red-600 px-3 py-2 rounded-lg text-sm font-bold transition-all" title="Logout"><i data-lucide="log-out" class="w-4 h-4"></i></button>
-          `;
-        }
+        const isAdmin = user.role === 'admin';
+        
+        const dashText = isAdmin ? 'Admin Panel' : 'Dashboard';
+        const dashIcon = isAdmin ? 'shield' : 'layout-dashboard';
+
+        const btnHTML = `
+          <button onclick="navigate('dashboard.html')" class="w-full sm:w-auto bg-gradient-to-r from-indigo-500 to-blue-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-indigo-500/30 flex items-center justify-center gap-2 transition-transform hover:-translate-y-0.5">${dashText} <i data-lucide="${dashIcon}" class="w-4 h-4"></i></button>
+          <button onclick="logout()" class="w-full sm:w-auto bg-white/10 hover:bg-red-500/20 border border-white/10 hover:border-red-500/30 text-white hover:text-red-400 px-3.5 py-2.5 rounded-xl text-sm font-bold flex justify-center items-center backdrop-blur-md transition-all" title="Logout"><i data-lucide="log-out" class="w-4 h-4"></i></button>
+        `;
+        document.getElementById('navActions').innerHTML = btnHTML;
+        document.getElementById('mobileNavActions').innerHTML = btnHTML;
+        
+        const heroBtn = document.getElementById('heroDashBtn');
+        if(heroBtn) heroBtn.innerHTML = `<i data-lucide="${dashIcon}" class="w-5 h-5"></i> Go to ${dashText}`;
+
         lucide.createIcons();
       }
     }
 
-    function logout() {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.reload(); 
-    }
-
-    // MODAL UI LOGIC
-    const overlay = document.getElementById('authModalOverlay');
-    const modal = document.getElementById('authModal');
+    function logout() { localStorage.removeItem('token'); localStorage.removeItem('user'); window.location.reload(); }
 
     function openAuthModal() {
-      overlay.classList.remove('hidden');
-      modal.classList.remove('modal-exit');
-      modal.classList.add('modal-enter');
+      document.getElementById('authModalOverlay').classList.remove('hidden');
+      document.getElementById('authModal').classList.add('modal-enter');
     }
-
+    
     function closeAuthModal() {
-      modal.classList.remove('modal-enter');
-      modal.classList.add('modal-exit');
+      document.getElementById('authModal').classList.replace('modal-enter', 'modal-exit');
       setTimeout(() => { 
-        overlay.classList.add('hidden'); 
-        hideAlert();
-        pendingNavigation = null;
-      }, 280);
+        document.getElementById('authModalOverlay').classList.add('hidden'); 
+        document.getElementById('authModal').classList.remove('modal-exit'); 
+      }, 300);
     }
 
     function switchAuthMode(mode) {
       isLoginMode = mode === 'login';
-      const nameField = document.getElementById('nameField');
-      const submitBtn = document.getElementById('authSubmitBtn');
+      document.getElementById('nameField').classList.toggle('hidden', isLoginMode);
+      document.getElementById('authName').required = !isLoginMode;
+      document.getElementById('modalTitle').innerText = isLoginMode ? 'Welcome Back' : 'Create Account';
+      document.getElementById('authSubmitBtn').innerHTML = isLoginMode ? 'Sign In <i data-lucide="arrow-right" class="w-4 h-4"></i>' : 'Create Account <i data-lucide="user-plus" class="w-4 h-4"></i>';
       
-      if(isLoginMode) {
-        nameField.classList.add('hidden');
-        document.getElementById('authName').removeAttribute('required');
-        submitBtn.innerHTML = 'Sign In <i data-lucide="arrow-right" class="w-4 h-4"></i>';
-        document.getElementById('modalTitle').innerText = 'Welcome Back';
-        document.getElementById('modalDesc').innerText = 'Sign in to your portal';
-        
-        document.getElementById('tabLogin').className = 'flex-1 py-2 text-sm font-bold rounded-lg bg-white text-indigo-600 shadow-sm transition-all';
-        document.getElementById('tabRegister').className = 'flex-1 py-2 text-sm font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all';
-      } else {
-        nameField.classList.remove('hidden');
-        document.getElementById('authName').setAttribute('required', 'true');
-        submitBtn.innerHTML = 'Create Account <i data-lucide="user-plus" class="w-4 h-4"></i>';
-        document.getElementById('modalTitle').innerText = 'Join HIETFINDIT';
-        document.getElementById('modalDesc').innerText = 'Create your student account';
-        
-        document.getElementById('tabRegister').className = 'flex-1 py-2 text-sm font-bold rounded-lg bg-white text-indigo-600 shadow-sm transition-all';
-        document.getElementById('tabLogin').className = 'flex-1 py-2 text-sm font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all';
-      }
+      document.getElementById('tabLogin').className = isLoginMode ? 'flex-1 py-2 text-sm font-bold rounded-lg bg-white/10 text-white shadow-sm border border-white/10 transition-all' : 'flex-1 py-2 text-sm font-bold rounded-lg text-slate-400 hover:text-white transition-all';
+      document.getElementById('tabRegister').className = !isLoginMode ? 'flex-1 py-2 text-sm font-bold rounded-lg bg-white/10 text-white shadow-sm border border-white/10 transition-all' : 'flex-1 py-2 text-sm font-bold rounded-lg text-slate-400 hover:text-white transition-all';
+      
+      document.getElementById('authAlert').classList.add('hidden');
       lucide.createIcons();
-      hideAlert();
     }
 
     function showAlert(msg, isError = true) {
       const box = document.getElementById('authAlert');
-      box.classList.remove('hidden', 'bg-red-50', 'text-red-600', 'bg-emerald-50', 'text-emerald-600');
-      box.classList.add(isError ? 'bg-red-50' : 'bg-emerald-50');
-      box.classList.add(isError ? 'text-red-600' : 'text-emerald-600');
+      box.className = `p-3 rounded-xl text-xs font-bold text-center border ${isError ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'}`;
       box.innerText = msg;
+      box.classList.remove('hidden');
     }
-    function hideAlert() { document.getElementById('authAlert').classList.add('hidden'); }
 
-    // API CALL (LOGIN / REGISTER)
     document.getElementById('authForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      hideAlert();
-      
-      const btn = document.getElementById('authSubmitBtn');
-      const originalText = btn.innerHTML;
-      btn.innerHTML = '<span class="animate-pulse">Processing...</span>';
-      btn.disabled = true;
-
-      const email = document.getElementById('authEmail').value.trim();
-      const password = document.getElementById('authPassword').value;
-      
-      let bodyData = { email, password };
-      const endpoint = isLoginMode ? '/auth/login' : '/auth/register';
-      
-      if(!isLoginMode) {
-        bodyData.name = document.getElementById('authName').value.trim();
-        bodyData.role = 'student'; 
-      }
+      const btn = document.getElementById('authSubmitBtn'); const originalText = btn.innerHTML;
+      btn.innerHTML = 'Processing...'; btn.disabled = true;
+      let bodyData = { email: document.getElementById('authEmail').value.trim(), password: document.getElementById('authPassword').value };
+      if(!isLoginMode) { bodyData.name = document.getElementById('authName').value.trim(); bodyData.role = 'student'; }
 
       try {
-        const response = await fetch(`${API_URL}${endpoint}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(bodyData)
-        });
-        
-        const data = await response.json();
+        const res = await fetch(`${API_URL}${isLoginMode ? '/auth/login' : '/auth/register'}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(bodyData) });
+        const data = await res.json();
+        if(res.ok) {
+          if(!isLoginMode) { 
+            showAlert('Registration successful! Please login.', false); 
+            setTimeout(() => switchAuthMode('login'), 2000); 
+          } else { 
+            localStorage.setItem('token', data.token); 
+            localStorage.setItem('user', JSON.stringify(data.user)); 
 
-        if(response.ok) {
-          if(!isLoginMode) {
-            showAlert('✅ Registration successful! Please login.', false);
-            document.getElementById('authForm').reset();
-            setTimeout(() => switchAuthMode('login'), 2000);
-          } else {
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify(data.user));
-            
-            closeAuthModal();
-            checkAuthState(); 
-
-            if (pendingNavigation) {
-              navigate(pendingNavigation);
-            } else if (data.user.role === 'admin') {
-              window.location.href = 'admin-dashboard.html';
+            if(data.user.role === 'admin') {
+              window.location.replace('admin-dashboard.html');
+            } else if (pendingNavigation) {
+              window.location.href = pendingNavigation;
+            } else {
+              closeAuthModal(); 
+              checkAuthState(); 
             }
           }
-        } else {
-          showAlert(data.error || 'Authentication failed. Please try again.');
-        }
-      } catch (err) {
-        showAlert('❌ Server is down or unreachable. Check connection.');
-      } finally {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-        lucide.createIcons();
-      }
+        } else showAlert(data.error);
+      } catch (err) { showAlert('Server unreachable.'); } finally { btn.innerHTML = originalText; btn.disabled = false; lucide.createIcons(); }
     });
 
+    // Run auth check on page load
     checkAuthState();
   </script>
 </body>

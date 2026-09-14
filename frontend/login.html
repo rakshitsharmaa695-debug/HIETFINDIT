@@ -7,179 +7,107 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    body { background-color: #f8fafc; }
-    .fade-in { animation: fadeIn 0.4s ease-in-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    body { font-family: 'Inter', sans-serif; background-color: #0f172a; }
+    .glass-card { background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border: 1px solid rgba(255, 255, 255, 0.1); }
+    .dark-input { background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); color: white; transition: all 0.3s ease; }
+    .dark-input:focus { border-color: #818cf8; background: rgba(255, 255, 255, 0.1); outline: none; box-shadow: 0 0 0 2px rgba(129, 140, 248, 0.2); }
+    .fade-in { animation: fadeIn 0.6s ease-out forwards; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
+<body class="text-white h-screen flex items-center justify-center relative overflow-hidden selection:bg-indigo-500/30">
 
-  <!-- Background Design -->
-  <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-indigo-500 rounded-full mix-blend-multiply filter blur-[100px] opacity-40"></div>
-  <div class="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-[100px] opacity-40"></div>
+  <!-- Immersive Background -->
+  <div class="absolute inset-0 w-full h-full -z-20 overflow-hidden">
+    <img src="1789033601541.jpg" class="absolute inset-0 w-full h-full object-cover scale-110 filter blur-[40px] opacity-40 mix-blend-screen">
+    <div class="absolute inset-0 bg-gradient-to-b from-slate-950/60 via-slate-900/80 to-slate-950"></div>
+  </div>
 
-  <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-8 relative z-10 fade-in border border-slate-100">
-    
-    <div class="text-center mb-8">
-      <div class="inline-flex items-center justify-center w-14 h-14 bg-indigo-600 rounded-2xl text-white font-black text-xl shadow-lg mb-4 shadow-indigo-200">HF</div>
-      <h1 class="text-2xl font-black text-slate-900 tracking-tight">Welcome to HIET<span class="text-indigo-600">FINDIT</span></h1>
-      <p class="text-sm text-slate-500 mt-1 font-medium" id="formDesc">Sign in to access your portal</p>
-    </div>
+  <div class="w-full max-w-md px-4 fade-in">
+    <!-- Go Back Button -->
+    <a href="index.html" class="inline-flex items-center gap-2 text-slate-400 hover:text-white text-sm font-bold mb-6 transition-colors">
+      <i data-lucide="arrow-left" class="w-4 h-4"></i> Return Home
+    </a>
 
-    <!-- Toggle Login / Register -->
-    <div class="flex bg-slate-100 p-1 rounded-xl mb-8">
-      <button type="button" onclick="toggleForm('login')" id="tabLogin" class="flex-1 py-2.5 text-sm font-bold rounded-lg bg-white text-indigo-600 shadow-sm transition-all">Login</button>
-      <button type="button" onclick="toggleForm('register')" id="tabRegister" class="flex-1 py-2.5 text-sm font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all">Register</button>
-    </div>
-
-    <form id="authForm" class="space-y-5">
-
-      <!-- Name (Only for Register) -->
-      <div id="nameField" class="hidden fade-in">
-        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Full Name</label>
-        <input type="text" id="name" placeholder="Your Name" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
+    <div class="glass-card rounded-[2rem] p-8 shadow-2xl relative overflow-hidden">
+      <!-- Glow -->
+      <div class="absolute -top-20 -right-20 w-40 h-40 bg-indigo-500/30 rounded-full blur-[40px]"></div>
+      
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center justify-center w-14 h-14 bg-gradient-to-br from-indigo-500 to-blue-500 rounded-2xl text-white font-black text-xl shadow-lg shadow-indigo-500/30 mb-4">HF</div>
+        <h3 class="text-2xl font-black text-white" id="title">Welcome Back</h3>
+        <p class="text-sm text-slate-400 mt-1" id="subtitle">Sign in to your portal</p>
       </div>
 
-      <!-- Email -->
-      <div>
-        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Email Address</label>
-        <div class="relative">
-          <i data-lucide="mail" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
-          <input type="email" id="email" required placeholder="you@example.com" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 pl-11 text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
+      <div class="flex bg-white/5 p-1.5 rounded-xl mb-6">
+        <button type="button" onclick="switchMode(true)" id="tabLogin" class="flex-1 py-2.5 text-sm font-bold rounded-lg bg-white/10 text-white shadow-sm border border-white/10 transition-all">Login</button>
+        <button type="button" onclick="switchMode(false)" id="tabReg" class="flex-1 py-2.5 text-sm font-bold rounded-lg text-slate-400 hover:text-white transition-all">Register</button>
+      </div>
+
+      <form id="authForm" class="space-y-4">
+        <div id="nameDiv" class="hidden">
+          <div class="relative">
+            <i data-lucide="user" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+            <input type="text" id="name" placeholder="Full Name" class="w-full dark-input rounded-xl py-3.5 pl-11 text-sm font-bold">
+          </div>
         </div>
-      </div>
-
-      <!-- Password -->
-      <div>
-        <label class="block text-xs font-bold text-slate-500 uppercase mb-2">Password</label>
         <div class="relative">
-          <i data-lucide="lock" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400"></i>
-          <input type="password" id="password" required placeholder="••••••••" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-3.5 pl-11 text-sm outline-none focus:ring-2 focus:ring-indigo-500 transition-all">
+          <i data-lucide="mail" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+          <input type="email" id="email" required placeholder="Email Address" class="w-full dark-input rounded-xl py-3.5 pl-11 text-sm font-bold">
         </div>
-      </div>
-
-      <!-- Alert Box -->
-      <div id="alertBox" class="hidden p-3 rounded-lg text-sm font-bold text-center"></div>
-
-      <!-- Submit Button -->
-      <button type="submit" id="submitBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-indigo-200 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2 mt-4">
-        Sign In <i data-lucide="arrow-right" class="w-4 h-4"></i>
-      </button>
-
-    </form>
-    
-    <div class="mt-6 text-center">
-      <a href="index.html" class="text-xs font-bold text-slate-400 hover:text-indigo-600 flex items-center justify-center gap-1"><i data-lucide="arrow-left" class="w-3 h-3"></i> Back to Homepage</a>
+        <div class="relative">
+          <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+          <input type="password" id="password" required placeholder="Password" class="w-full dark-input rounded-xl py-3.5 pl-11 text-sm font-bold">
+        </div>
+        
+        <div id="alertBox" class="hidden p-3 rounded-xl text-xs font-bold text-center border"></div>
+        
+        <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-indigo-500 to-blue-500 hover:from-indigo-600 hover:to-blue-600 text-white font-bold py-4 rounded-xl shadow-lg shadow-indigo-500/30 transition-all flex items-center justify-center gap-2 mt-4">
+          Sign In <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </button>
+      </form>
     </div>
-
   </div>
 
   <script>
     lucide.createIcons();
     const API_URL = window.location.hostname === '127.0.0.1' || window.location.hostname === 'localhost' ? 'http://localhost:5000/api' : 'https://hietfindit-lqzt.onrender.com/api';
-    
-    let isLoginMode = true;
+    let isLogin = true;
 
-    function toggleForm(mode) {
-      isLoginMode = mode === 'login';
-      const nameField = document.getElementById('nameField');
-      const submitBtn = document.getElementById('submitBtn');
-      const desc = document.getElementById('formDesc');
+    function switchMode(login) {
+      isLogin = login;
+      document.getElementById('nameDiv').classList.toggle('hidden', isLogin);
+      document.getElementById('name').required = !isLogin;
+      document.getElementById('title').innerText = isLogin ? 'Welcome Back' : 'Create Account';
+      document.getElementById('subtitle').innerText = isLogin ? 'Sign in to your portal' : 'Join the HIET Network';
+      document.getElementById('submitBtn').innerHTML = isLogin ? 'Sign In <i data-lucide="arrow-right" class="w-4 h-4"></i>' : 'Register Now <i data-lucide="user-plus" class="w-4 h-4"></i>';
       
-      const tabLogin = document.getElementById('tabLogin');
-      const tabRegister = document.getElementById('tabRegister');
-
-      if(isLoginMode) {
-        nameField.classList.add('hidden');
-        document.getElementById('name').removeAttribute('required');
-        
-        submitBtn.innerHTML = 'Sign In <i data-lucide="arrow-right" class="w-4 h-4"></i>';
-        desc.innerText = 'Sign in to access your portal';
-        
-        tabLogin.className = 'flex-1 py-2.5 text-sm font-bold rounded-lg bg-white text-indigo-600 shadow-sm transition-all';
-        tabRegister.className = 'flex-1 py-2.5 text-sm font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all';
-      } else {
-        nameField.classList.remove('hidden');
-        document.getElementById('name').setAttribute('required', 'true');
-        
-        submitBtn.innerHTML = 'Create Account <i data-lucide="user-plus" class="w-4 h-4"></i>';
-        desc.innerText = 'Create a new student account';
-        
-        tabRegister.className = 'flex-1 py-2.5 text-sm font-bold rounded-lg bg-white text-indigo-600 shadow-sm transition-all';
-        tabLogin.className = 'flex-1 py-2.5 text-sm font-bold rounded-lg text-slate-500 hover:text-slate-700 transition-all';
-      }
+      document.getElementById('tabLogin').className = isLogin ? 'flex-1 py-2.5 text-sm font-bold rounded-lg bg-white/10 text-white shadow-sm border border-white/10 transition-all' : 'flex-1 py-2.5 text-sm font-bold rounded-lg text-slate-400 hover:text-white transition-all';
+      document.getElementById('tabReg').className = !isLogin ? 'flex-1 py-2.5 text-sm font-bold rounded-lg bg-white/10 text-white shadow-sm border border-white/10 transition-all' : 'flex-1 py-2.5 text-sm font-bold rounded-lg text-slate-400 hover:text-white transition-all';
       lucide.createIcons();
-      hideAlert();
     }
 
-    function showAlert(msg, isError = true) {
-      const box = document.getElementById('alertBox');
-      box.classList.remove('hidden', 'bg-red-50', 'text-red-600', 'bg-emerald-50', 'text-emerald-600');
-      box.classList.add(isError ? 'bg-red-50' : 'bg-emerald-50');
-      box.classList.add(isError ? 'text-red-600' : 'text-emerald-600');
-      box.innerText = msg;
-    }
-
-    function hideAlert() {
-      document.getElementById('alertBox').classList.add('hidden');
+    function alertMsg(msg, err=true) {
+      const b = document.getElementById('alertBox');
+      b.className = `p-3 rounded-xl text-xs font-bold text-center border ${err ? 'bg-red-500/10 text-red-400 border-red-500/20' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'}`;
+      b.innerText = msg; b.classList.remove('hidden');
     }
 
     document.getElementById('authForm').addEventListener('submit', async (e) => {
       e.preventDefault();
-      hideAlert();
-      
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
-      
-      let bodyData = { email, password };
-      const endpoint = isLoginMode ? '/auth/login' : '/auth/register';
-      
-      if(!isLoginMode) {
-        // Hamesha new user ko Student banaya jayega automatically
-        bodyData.name = document.getElementById('name').value.trim();
-        bodyData.role = 'student'; 
-      }
-
-      const btn = document.getElementById('submitBtn');
-      const originalText = btn.innerHTML;
-      btn.innerHTML = '<span class="animate-pulse">Processing...</span>';
-      btn.disabled = true;
+      const btn = document.getElementById('submitBtn'); const orig = btn.innerHTML;
+      btn.innerHTML = 'Processing...'; btn.disabled = true;
+      let bodyData = { email: document.getElementById('email').value.trim(), password: document.getElementById('password').value };
+      if(!isLogin) { bodyData.name = document.getElementById('name').value.trim(); bodyData.role = 'student'; }
 
       try {
-        const response = await fetch(`${API_URL}${endpoint}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(bodyData)
-        });
-        
-        const data = await response.json();
-
-        if(response.ok) {
-          if(!isLoginMode) {
-            showAlert('✅ Registration successful! Redirecting to login...', false);
-            document.getElementById('authForm').reset();
-            setTimeout(() => toggleForm('login'), 2000);
-          } else {
-            localStorage.setItem('token', data.token);
-            localStorage.setItem('user', JSON.stringify(data.user));
-            
-            // SMART ROUTING: DB se role check hoga
-            if(data.user.role === 'admin') {
-              window.location.href = 'admin-dashboard.html';
-            } else {
-              window.location.href = 'dashboard.html';
-            }
-          }
-        } else {
-          showAlert(data.error || 'Authentication failed. Please try again.');
-        }
-      } catch (err) {
-        showAlert('❌ Server is down or unreachable. Check your connection.');
-      } finally {
-        btn.innerHTML = originalText;
-        btn.disabled = false;
-        lucide.createIcons();
-      }
+        const res = await fetch(`${API_URL}${isLogin ? '/auth/login' : '/auth/register'}`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(bodyData) });
+        const data = await res.json();
+        if(res.ok) {
+          if(!isLogin) { alertMsg('Success! Please login.', false); setTimeout(()=>switchMode(true), 2000); }
+          else { localStorage.setItem('token', data.token); localStorage.setItem('user', JSON.stringify(data.user)); window.location.href = data.user.role === 'admin' ? 'admin-dashboard.html' : 'dashboard.html'; }
+        } else alertMsg(data.error);
+      } catch (err) { alertMsg('Server connection failed.'); } finally { btn.innerHTML = orig; btn.disabled = false; lucide.createIcons(); }
     });
   </script>
 </body>
