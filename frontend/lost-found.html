@@ -66,7 +66,6 @@
         grid.innerHTML = data.map((i, index) => {
           const imgSrc = i.item_photo ? i.item_photo : FALLBACK_IMAGE;
           
-          // Dynamic Badges & Buttons based on Status
           let badgeClass = 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30';
           let badgeIcon = 'alert-circle';
           let actionBtn = `<button onclick="requestClaim('${i._id || i.id}')" class="w-full mt-4 bg-indigo-500/20 hover:bg-indigo-500/40 text-indigo-300 font-bold py-2.5 rounded-xl border border-indigo-500/30 transition-all flex justify-center items-center gap-2 shadow-sm text-sm"><i data-lucide="hand" class="w-4 h-4"></i> Request Claim</button>`;
@@ -74,7 +73,7 @@
           if(i.status === 'Claim Requested') {
             badgeClass = 'bg-amber-500/20 text-amber-400 border-amber-500/30';
             badgeIcon = 'clock';
-            actionBtn = `<div class="w-full mt-4 bg-amber-500/10 text-amber-300 font-bold py-2.5 rounded-xl border border-amber-500/20 text-center text-sm flex justify-center items-center gap-2"><i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Pending Approval</div>`;
+            actionBtn = `<div class="w-full mt-4 bg-amber-500/10 text-amber-300 font-bold py-2.5 rounded-xl border border-amber-500/20 text-center text-sm flex justify-center items-center gap-2"><i data-lucide="loader" class="w-4 h-4 animate-spin"></i> Pending Admin Approval</div>`;
           } else if(i.status === 'Claimed') {
             badgeClass = 'bg-slate-500/20 text-slate-300 border-slate-500/30';
             badgeIcon = 'check-circle';
@@ -105,14 +104,26 @@
       } catch (err) { grid.innerHTML = '<div class="col-span-full text-center text-red-400 font-bold py-10">Failed to load inventory.</div>'; }
     }
     
-    // NEW: Function to send claim request
+    // 🚀 NEW: Function to send claim request WITH USER DETAILS
     async function requestClaim(id) {
       if(!confirm("Are you sure you want to request a claim for this item?")) return;
       try {
-        await fetch(`${API_URL}/lost-found/request-claim/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'} });
-        alert("Claim Request Sent! Admin will review it.");
-        loadLostFound(); // Refresh the list
-      } catch (e) { alert("Failed to send request."); }
+        const userStr = localStorage.getItem('user');
+        const user = userStr ? JSON.parse(userStr) : { name: 'Unknown User', email: 'unknown@hiet.com' };
+
+        const res = await fetch(`${API_URL}/lost-found/request-claim/${id}`, { 
+          method: 'PUT', 
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ student_name: user.name, student_email: user.email }) // 👈 PASSING USER DETAILS HERE
+        });
+        
+        if(res.ok) {
+          alert("✅ Claim Request Sent! Admin will review it.");
+          loadLostFound();
+        } else {
+          alert("⚠️ Server is updating! Please wait 1 minute and try again.");
+        }
+      } catch (e) { alert("❌ Failed to send request."); }
     }
 
     loadLostFound();
